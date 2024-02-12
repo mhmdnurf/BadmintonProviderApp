@@ -20,7 +20,6 @@ export default DashboardHeader;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
     marginHorizontal: 20,
   },
   title: {
