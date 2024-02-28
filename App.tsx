@@ -15,6 +15,7 @@ import MenuJadwal from './src/screens/MenuJadwal';
 import TambahLapangan from './src/screens/TambahLapangan';
 import PaketLapangan from './src/screens/PaketLapangan';
 import PaketMember from './src/screens/PaketMember';
+import DetailPemesan from './src/screens/DetailPemesan';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -128,6 +129,15 @@ export default function App() {
           name="PaketMember"
           component={PaketMember}
           options={{title: '', headerShown: true, headerTintColor: '#AAC8A7'}}
+        />
+        <Stack.Screen
+          name="DetailPemesan"
+          component={DetailPemesan}
+          options={{
+            title: '',
+            headerShown: true,
+            headerTintColor: '#AAC8A7',
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -2,34 +2,34 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-interface InfoPendapatan {
-  pendapatan: number;
+interface InfoTagihan {
+  tagihan: number;
 }
 
-const InfoPendapatan = ({pendapatan}: InfoPendapatan) => {
+const InfoTagihan = ({tagihan}: InfoTagihan) => {
   const monthName = new Date().toLocaleString('id-ID', {month: 'long'});
   const year = new Date().getFullYear();
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>{`Pendapatan ${monthName} ${year}`}</Text>
+        <Text style={styles.title}>{`Tagihan Admin ${monthName} ${year}`}</Text>
         <View style={styles.subTitleContainer}>
           <View style={styles.iconContainer}>
-            <Icon name="cash-fast" size={50} color="#40A2E3" />
+            <Icon name="card-bulleted" size={50} color="#AAC8A7" />
           </View>
-          <Text style={styles.subTitle}>Jumlah Pendapatan</Text>
+          <Text style={styles.subTitle}>Jumlah Tagihan</Text>
           <Text
             style={[
               styles.subTitle,
               styles.number,
-            ]}>{`Rp. ${pendapatan.toLocaleString('id-ID')}`}</Text>
+            ]}>{`Rp. ${tagihan.toLocaleString('id-ID')}`}</Text>
         </View>
       </View>
     </>
   );
 };
 
-export default InfoPendapatan;
+export default InfoTagihan;
 
 const styles = StyleSheet.create({
   container: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   subTitleContainer: {
     marginTop: 10,
-    backgroundColor: '#40A2E3',
+    backgroundColor: '#AAC8A7',
     borderWidth: 3,
     borderColor: '#EEEDEB',
     padding: 20,

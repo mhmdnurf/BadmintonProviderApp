@@ -6,6 +6,7 @@ import {
   View,
   Platform,
   Pressable,
+  ToastAndroid,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FlatContainer from '../components/FlatContainer';
@@ -77,7 +78,7 @@ const Jadwal = ({route, navigation}: Jadwal) => {
   }, []);
 
   const handleNavigateToPemesanan = (time: string) => () => {
-    navigation.navigate('PemesananLapangan', {
+    navigation.navigate('DetailPemesan', {
       waktuBooking: time,
       tanggalPemesanan: date.toLocaleDateString('id-ID', {
         weekday: 'long',
@@ -91,7 +92,7 @@ const Jadwal = ({route, navigation}: Jadwal) => {
   return (
     <>
       <FlatContainer backgroundColor="white">
-        <Header title={`Jadwal Lapangan Chans`} />
+        <Header title="Jadwal Lapangan" />
         <View style={styles.dateContainer}>
           <Text style={styles.dateTitle}>Pilih Tanggal</Text>
           <Pressable style={styles.btnPicker} onPress={showDatepicker}>
@@ -139,15 +140,21 @@ const Jadwal = ({route, navigation}: Jadwal) => {
                     isBooked={lap.bookedTimes.includes(item)}
                     onPress={
                       lap.bookedTimes.includes(item)
-                        ? () => {}
-                        : handleNavigateToPemesanan(item)
+                        ? handleNavigateToPemesanan(item)
+                        : () => {
+                            ToastAndroid.showWithGravity(
+                              'Lapangan belum dipesan',
+                              ToastAndroid.SHORT,
+                              ToastAndroid.CENTER,
+                            );
+                          }
                     }
                   />
                 ))}
               </View>
             </View>
           ))}
-          <BottomSpace marginBottom={40} />
+          <BottomSpace marginBottom={150} />
         </ScrollView>
       </FlatContainer>
     </>
@@ -161,14 +168,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginHorizontal: 20,
   },
-  titleContainer: {fontWeight: '600', fontSize: 20, marginBottom: 10},
+  titleContainer: {
+    fontWeight: '600',
+    fontSize: 20,
+    marginBottom: 10,
+    color: '#41444B',
+  },
   itemContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   dateContainer: {marginHorizontal: 20, marginTop: 40},
-  dateTitle: {fontWeight: '600', fontSize: 20, marginBottom: 10},
+  dateTitle: {
+    fontWeight: '600',
+    fontSize: 20,
+    marginBottom: 10,
+    color: '#41444B',
+  },
   btnPicker: {
     backgroundColor: 'white',
     padding: 10,
@@ -181,7 +198,7 @@ const styles = StyleSheet.create({
   btnLabelContainer: {display: 'flex', flexDirection: 'row'},
   icon: {alignSelf: 'center'},
   label: {
-    color: '#6F7789',
+    color: '#41444B',
     fontSize: 18,
     fontWeight: '600',
     alignSelf: 'center',

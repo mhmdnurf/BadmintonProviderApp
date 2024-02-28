@@ -4,11 +4,11 @@ import HeaderContainer from '../components/home/HeaderContainer';
 import Header from '../components/Header';
 import DashboardHeader from '../components/home/DashboardHeader';
 import Waktu from '../components/home/Waktu';
-import CetakHarian from '../components/home/CetakHarian';
 import InfoPendapatan from '../components/home/InfoPendapatan';
 import Navbar from '../components/nav/Navbar';
 import ContentHeader from '../components/home/ContentHeader';
 import BottomSpace from '../components/BottomSpace';
+import InfoTagihan from '../components/home/InfoTagihan';
 
 const Home = () => {
   return (
@@ -21,7 +21,7 @@ const Home = () => {
           <ContentHeader title="Overview" />
           <Navbar />
           <InfoPendapatan pendapatan={1000000} />
-          {/* <CetakHarian onPress={() => console.log('Cetak Harian')} /> */}
+          <InfoTagihan tagihan={500000} />
         </HeaderContainer>
         <BottomSpace marginBottom={100} />
       </RootContainer>
