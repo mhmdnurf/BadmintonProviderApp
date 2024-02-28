@@ -16,6 +16,7 @@ import TambahLapangan from './src/screens/TambahLapangan';
 import PaketLapangan from './src/screens/PaketLapangan';
 import PaketMember from './src/screens/PaketMember';
 import DetailPemesan from './src/screens/DetailPemesan';
+import Rekapitulasi from './src/screens/Rekapitulasi';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -138,6 +139,11 @@ export default function App() {
             headerShown: true,
             headerTintColor: '#AAC8A7',
           }}
+        />
+        <Stack.Screen
+          name="Rekapitulasi"
+          component={Rekapitulasi}
+          options={{title: '', headerShown: true, headerTintColor: '#AAC8A7'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

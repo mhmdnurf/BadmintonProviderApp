@@ -59,7 +59,7 @@ const Jadwal = ({route, navigation}: Jadwal) => {
 
     const [startHour, endHour] = data.waktuBuka
       .split(' - ')
-      .map(time => parseInt(time.split('.')[0]));
+      .map(time => parseInt(time.split('.')[0], 10));
     const waktu = Array.from({length: endHour - startHour + 1}, (_, i) => {
       const hour = startHour + i;
       return `${hour < 10 ? '0' + hour : hour}.00`;

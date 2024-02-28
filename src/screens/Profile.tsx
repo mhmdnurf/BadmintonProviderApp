@@ -14,7 +14,7 @@ interface Profile {
 
 const Profile = ({navigation}: Profile) => {
   const handleNavigateRiwayat = () => {
-    navigation.navigate('RiwayatPemesanan');
+    navigation.navigate('Rekapitulasi');
   };
 
   const handleLogout = () => {
