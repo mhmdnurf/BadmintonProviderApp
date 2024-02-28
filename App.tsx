@@ -12,6 +12,9 @@ import Register from './src/screens/Register';
 import Home from './src/screens/Home';
 import Profile from './src/screens/Profile';
 import MenuJadwal from './src/screens/MenuJadwal';
+import TambahLapangan from './src/screens/TambahLapangan';
+import PaketLapangan from './src/screens/PaketLapangan';
+import PaketMember from './src/screens/PaketMember';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -102,6 +105,29 @@ export default function App() {
           name="Home"
           component={MainTabs}
           options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TambahLapangan"
+          component={TambahLapangan}
+          options={{
+            title: '',
+            headerShown: true,
+            headerTintColor: '#AAC8A7',
+          }}
+        />
+        <Stack.Screen
+          name="PaketLapangan"
+          component={PaketLapangan}
+          options={{
+            title: '',
+            headerShown: true,
+            headerTintColor: '#AAC8A7',
+          }}
+        />
+        <Stack.Screen
+          name="PaketMember"
+          component={PaketMember}
+          options={{title: '', headerShown: true, headerTintColor: '#AAC8A7'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

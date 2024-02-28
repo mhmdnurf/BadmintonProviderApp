@@ -6,20 +6,24 @@ import DashboardHeader from '../components/home/DashboardHeader';
 import Waktu from '../components/home/Waktu';
 import CetakHarian from '../components/home/CetakHarian';
 import InfoPendapatan from '../components/home/InfoPendapatan';
-import HomeImage from '../components/home/HomeImage';
+import Navbar from '../components/nav/Navbar';
+import ContentHeader from '../components/home/ContentHeader';
+import BottomSpace from '../components/BottomSpace';
 
 const Home = () => {
   return (
     <>
       <RootContainer backgroundColor="white">
         <HeaderContainer>
-          <Header title="Dashboard" />
-          <HomeImage />
+          <Header title="Dashboard" marginBottom={40} />
           <DashboardHeader fullName="Pedry" />
           <Waktu />
-          <CetakHarian onPress={() => console.log('Cetak Harian')} />
+          <ContentHeader title="Overview" />
+          <Navbar />
           <InfoPendapatan pendapatan={1000000} />
+          {/* <CetakHarian onPress={() => console.log('Cetak Harian')} /> */}
         </HeaderContainer>
+        <BottomSpace marginBottom={100} />
       </RootContainer>
     </>
   );

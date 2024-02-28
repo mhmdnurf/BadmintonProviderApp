@@ -6,10 +6,12 @@ interface InfoPendapatan {
 }
 
 const InfoPendapatan = ({pendapatan}: InfoPendapatan) => {
+  const monthName = new Date().toLocaleString('id-ID', {month: 'long'});
+  const year = new Date().getFullYear();
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>Jumlah Pendapatan</Text>
+        <Text style={styles.title}>{`Pendapatan ${monthName} ${year}`}</Text>
         <View style={styles.subTitleContainer}>
           <Text style={[styles.subTitle]}>{`Rp. ${pendapatan.toLocaleString(
             'id-ID',
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#6F7789',
+    color: '#41444B',
   },
   subTitleContainer: {
     marginTop: 10,
