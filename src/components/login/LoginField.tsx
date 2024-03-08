@@ -54,5 +54,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: '#AAC8A7',
     fontSize: 12,
+    fontFamily: 'Poppins Regular',
   },
 });

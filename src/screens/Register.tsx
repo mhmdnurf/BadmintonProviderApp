@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginLeft: 20,
     marginTop: 50,
-    fontWeight: '600',
-    marginVertical: 20,
+    marginBottom: 10,
+    fontFamily: 'Poppins SemiBold',
   },
   inputContainer: {
     marginHorizontal: 20,

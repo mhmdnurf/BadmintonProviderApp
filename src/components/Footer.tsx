@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
   },
-  title: {color: '#6F7789'},
-  subTitle: {color: '#AAC8A7', marginLeft: 5},
+  title: {color: '#6F7789', fontFamily: 'Poppins Regular'},
+  subTitle: {color: '#AAC8A7', marginLeft: 5, fontFamily: 'Poppins SemiBold'},
 });

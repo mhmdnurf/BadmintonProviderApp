@@ -69,6 +69,8 @@ const RegisterField = ({
         secureTextEntry={false}
         value={nikValue}
         onChangeText={onChangeTextNIK}
+        keyboardType="number-pad"
+        maxLength={16}
       />
       <InputField
         placeholder="Email"

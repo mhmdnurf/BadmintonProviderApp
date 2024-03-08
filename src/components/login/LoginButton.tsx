@@ -29,9 +29,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   btnText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     color: 'white',
   },
 });

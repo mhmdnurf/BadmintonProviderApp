@@ -8,6 +8,7 @@ interface InputField {
   onChangeText?: (text: string) => void;
   editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
+  maxLength?: number;
 }
 
 const InputField = ({
@@ -17,6 +18,7 @@ const InputField = ({
   onChangeText,
   editable,
   keyboardType = 'default',
+  maxLength,
 }: InputField) => {
   return (
     <>
@@ -28,6 +30,7 @@ const InputField = ({
         onChangeText={onChangeText}
         editable={editable}
         keyboardType={keyboardType}
+        maxLength={maxLength}
       />
     </>
   );

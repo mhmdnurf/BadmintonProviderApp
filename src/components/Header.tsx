@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     textAlign: 'center',
     fontSize: 30,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     color: '#41444B',
   },
 });

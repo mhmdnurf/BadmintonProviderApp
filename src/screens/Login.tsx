@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   loginTitle: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 18,
+    fontFamily: 'Poppins SemiBold',
     color: '#6F7789',
   },
 });
