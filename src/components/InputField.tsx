@@ -25,6 +25,7 @@ const InputField = ({
       <TextInput
         style={styles.inputField}
         placeholder={placeholder}
+        placeholderTextColor={'grey'}
         secureTextEntry={secureTextEntry}
         value={value}
         onChangeText={onChangeText}
@@ -46,5 +47,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 5,
     flexGrow: 1,
+    color: 'black',
   },
 });

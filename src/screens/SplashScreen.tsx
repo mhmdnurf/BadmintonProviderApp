@@ -2,17 +2,32 @@ import React from 'react';
 
 import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import Logo from '../assets/svg/splash_screen.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface SplashScreen {
   navigation: any;
 }
 
 const SplashScreen = ({navigation}: SplashScreen) => {
-  React.useEffect(() => {
-    setTimeout(() => {
+  const checkLoginStatus = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      if (userToken) {
+        navigation.replace('Home');
+      } else {
+        navigation.replace('Login');
+      }
+    } catch (error) {
+      console.log(error);
       navigation.replace('Login');
+    }
+  };
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      checkLoginStatus();
     }, 3000);
-  }, [navigation]);
+    return () => clearInterval(interval);
+  });
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#AAC8A7" />

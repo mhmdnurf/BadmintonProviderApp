@@ -28,6 +28,8 @@ interface RegisterField {
   fotoGorValue: string | undefined;
   suratIzinValue?: string | undefined;
   fotoUserGor?: string | undefined;
+  alamatValue: string;
+  onChangeTextAlamatGOR: (text: string) => void;
 }
 
 const RegisterField = ({
@@ -55,6 +57,8 @@ const RegisterField = ({
   fotoGorValue,
   suratIzinValue,
   fotoUserGor,
+  alamatValue,
+  onChangeTextAlamatGOR,
 }: RegisterField) => {
   return (
     <>
@@ -93,13 +97,14 @@ const RegisterField = ({
       <InputField
         placeholder="Alamat GOR"
         secureTextEntry={false}
-        value={namaGorValue}
-        onChangeText={onChangeTextNamaGor}
+        value={alamatValue}
+        onChangeText={onChangeTextAlamatGOR}
       />
       <View style={styles.picker}>
         <Picker
           selectedValue={selectedWaktuBukaValue}
-          onValueChange={onWaktuBukaValueChange}>
+          onValueChange={onWaktuBukaValueChange}
+          style={styles.pickerText}>
           <Picker.Item label="Pilih Waktu Buka" value="" />
           <Picker.Item label="06.00" value="06.00" />
           <Picker.Item label="07.00" value="07.00" />
@@ -120,6 +125,7 @@ const RegisterField = ({
       </View>
       <View style={styles.picker}>
         <Picker
+          style={styles.pickerText}
           selectedValue={selectedWaktuTutupValue}
           onValueChange={onWaktuTutupValueChange}>
           <Picker.Item label="Pilih Waktu Tutup" value="" />
@@ -214,6 +220,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 10,
     elevation: 2,
+  },
+  pickerText: {
+    color: 'grey',
   },
   btnText: {color: 'white', fontSize: 24},
 });

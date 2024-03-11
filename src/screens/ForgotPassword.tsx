@@ -30,6 +30,7 @@ const ForgotPassword = (): React.JSX.Element => {
           onChangeText={setEmail}
           value={email}
           placeholder="Email"
+          placeholderTextColor={'grey'}
         />
       </View>
       <TouchableOpacity style={styles.btnLogin}>
@@ -60,11 +61,14 @@ const styles = StyleSheet.create({
   },
   formTitle: {
     fontSize: 24,
-    fontWeight: '700',
+    fontFamily: 'Poppins SemiBold',
     color: '#AAC8A7',
   },
   formText: {
-    marginBottom: 10,
+    marginVertical: 10,
+    color: 'grey',
+    fontSize: 16,
+    fontFamily: 'Poppins Regular',
   },
   input: {
     height: 44,
@@ -86,5 +90,6 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontSize: 16,
+    fontFamily: 'Poppins SemiBold',
   },
 });

@@ -1,12 +1,30 @@
 import React from 'react';
 import OverviewCard from './OverviewCard';
 import {FlatList, StyleSheet, View} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 const Navbar = () => {
+  const [jumlahLapangan, setJumlahLapangan] = React.useState('');
+  const user = auth().currentUser;
+
+  const getUser = React.useCallback(async () => {
+    const userDocument = await firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .get();
+
+    const data = userDocument.data();
+    setJumlahLapangan(data?.jumlahLapangan);
+  }, [user]);
+
+  React.useEffect(() => {
+    getUser();
+  }, [getUser]);
   const data = [
     {
       id: 1,
       title: 'Jumlah Lapangan',
-      informasi: '5',
+      informasi: jumlahLapangan,
       btnText: 'Edit',
       onPress: 'TambahLapangan',
       iconName: 'soccer-field',

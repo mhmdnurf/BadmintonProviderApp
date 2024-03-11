@@ -9,14 +9,32 @@ import Navbar from '../components/nav/Navbar';
 import ContentHeader from '../components/home/ContentHeader';
 import BottomSpace from '../components/BottomSpace';
 import InfoTagihan from '../components/home/InfoTagihan';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const Home = () => {
+  const [fullName, setFullName] = React.useState('');
+
+  const user = auth().currentUser;
+  const getUser = React.useCallback(async () => {
+    const userDocument = await firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .get();
+
+    const data = userDocument.data();
+    setFullName(data?.namaLengkap);
+  }, [user]);
+
+  React.useEffect(() => {
+    getUser();
+  }, [getUser]);
   return (
     <>
       <RootContainer backgroundColor="white">
         <HeaderContainer>
           <Header title="Dashboard" marginBottom={40} />
-          <DashboardHeader fullName="Pedry" />
+          <DashboardHeader fullName={fullName} />
           <Waktu />
           <ContentHeader title="Overview" />
           <Navbar />

@@ -8,30 +8,37 @@ import BottomSpace from '../components/BottomSpace';
 import RootContainer from '../components/RootContainer';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-
-type UploadedFiles = {
-  data: string;
-};
-
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 interface Register {
   navigation: any;
 }
+
+type DocumentPick = {
+  uri: string;
+  name: string;
+};
 const Register = ({navigation}: Register) => {
   const [fullName, setFullName] = React.useState('');
   const [nik, setNik] = React.useState('');
-  const [suratIzin, setSuratIzin] = React.useState<string | undefined>('');
+  const [suratIzin, setSuratIzin] = React.useState<DocumentPick | undefined>(
+    undefined,
+  );
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [namaGor, setNamaGor] = React.useState('');
   const [selectedWaktuBuka, setSelectedWaktuBuka] = React.useState('');
   const [selectedWaktuTutup, setSelectedWaktuTutup] = React.useState('');
   const [jumlahLapangan, setJumlahLapangan] = React.useState('');
-  const [fotoGor, setFotoGor] = React.useState<string | undefined>('');
-  const [fotoUser, setFotoUser] = React.useState<string | undefined>('');
+  const [fotoGor, setFotoGor] = React.useState<DocumentPick | undefined>(
+    undefined,
+  );
+  const [fotoUser, setFotoUser] = React.useState<DocumentPick | undefined>(
+    undefined,
+  );
   const [nomor, setNomor] = React.useState('');
-  const [uploadSuratIzin, setUploadSuratIzin] = React.useState<UploadedFiles>();
-  const [uploadFotoGor, setUploadFotoGor] = React.useState<UploadedFiles>();
-  const [uploadFotoUser, setUploadFotoUser] = React.useState<UploadedFiles>();
+  const [alamatGOR, setAlamatGOR] = React.useState('');
 
   const handleNavigateLogin = () => {
     navigation.navigate('Login');
@@ -43,27 +50,12 @@ const Register = ({navigation}: Register) => {
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
 
-      const uploadedFileUrl = res.uri;
-      const fileType = res.type;
-      const fileName = res.name;
+      const selectedFile = res.uri;
+      const selectedFileName = res.name;
 
-      console.log({
-        uploadedFileUrl,
-        fileType,
-      });
-
-      if (fileName) {
-        setSuratIzin(fileName);
+      if (selectedFileName && selectedFile) {
+        setSuratIzin({uri: selectedFile, name: selectedFileName});
       }
-
-      // Read the file data
-      const fileData = await RNFS.readFile(uploadedFileUrl, 'base64');
-
-      setUploadSuratIzin({
-        data: `data:${fileType};base64,${fileData}`,
-      });
-
-      //   console.log(uploadSuratIzin);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.info(err);
@@ -79,27 +71,12 @@ const Register = ({navigation}: Register) => {
         type: [DocumentPicker.types.images],
       });
 
-      const uploadedFileUrl = res.uri;
-      const fileType = res.type;
-      const fileName = res.name;
+      const selectedFile = res.uri;
+      const selectedFileName = res.name;
 
-      console.log({
-        uploadedFileUrl,
-        fileType,
-      });
-
-      if (fileName) {
-        setFotoGor(fileName);
+      if (selectedFileName && selectedFile) {
+        setFotoGor({uri: selectedFile, name: selectedFileName});
       }
-
-      // Read the file data
-      const fileData = await RNFS.readFile(uploadedFileUrl, 'base64');
-
-      setUploadFotoGor({
-        data: `data:${fileType};base64,${fileData}`,
-      });
-
-      //   console.log(uploadSuratIzin);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.info(err);
@@ -115,27 +92,12 @@ const Register = ({navigation}: Register) => {
         type: [DocumentPicker.types.images],
       });
 
-      const uploadedFileUrl = res.uri;
-      const fileType = res.type;
-      const fileName = res?.name;
+      const selectedFile = res.uri;
+      const selectedFileName = res.name;
 
-      console.log({
-        uploadedFileUrl,
-        fileType,
-      });
-
-      if (fileName) {
-        setFotoUser(fileName);
+      if (selectedFile && selectedFileName) {
+        setFotoUser({uri: selectedFile, name: selectedFileName});
       }
-
-      // Read the file data
-      const fileData = await RNFS.readFile(uploadedFileUrl, 'base64');
-
-      setUploadFotoUser({
-        data: `data:${fileType};base64,${fileData}`,
-      });
-
-      //   console.log(uploadSuratIzin);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.info(err);
@@ -145,24 +107,64 @@ const Register = ({navigation}: Register) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const userCredential = await auth().createUserWithEmailAndPassword(
+      email,
+      password,
+    );
+    const user = userCredential.user;
+    const fotoGORFileName = `fotoGOR/${user?.uid}/fotoGOR_${user?.uid}`;
+    const fotoGORReference = storage().ref(fotoGORFileName);
     try {
-      console.log('Submitted Data', {
-        fullName,
-        nik,
-        email,
-        password,
-        nomor,
-        suratIzin,
-        fotoGor,
-        fotoUser,
-        namaGor,
-        selectedWaktuBuka,
-        selectedWaktuTutup,
-        jumlahLapangan,
-        uploadFotoGor,
-        uploadFotoUser,
-        uploadSuratIzin,
+      // Foto GOR
+      const fotoGORFilePath = `${RNFS.DocumentDirectoryPath}/${fotoGor}`;
+      if (fotoGor) {
+        await RNFS.copyFile(fotoGor.uri, fotoGORFilePath);
+      }
+      const fotoGORBlob = await RNFS.readFile(fotoGORFilePath, 'base64');
+
+      await fotoGORReference.putString(fotoGORBlob, 'base64');
+      const fotoGORUrl = await fotoGORReference.getDownloadURL();
+
+      // Foto User
+      const fotoUserFileName = `fotoUser/${user?.uid}/fotoUser_${user?.uid}`;
+      const fotoUserReference = storage().ref(fotoUserFileName);
+      const fotoUserFilePath = `${RNFS.DocumentDirectoryPath}/${fotoUser}`;
+      if (fotoUser) {
+        await RNFS.copyFile(fotoUser.uri, fotoUserFilePath);
+      }
+      const fotoUserBlob = await RNFS.readFile(fotoUserFilePath, 'base64');
+
+      await fotoUserReference.putString(fotoUserBlob, 'base64');
+      const fotoUserUrl = await fotoUserReference.getDownloadURL();
+
+      // Foto Surat Izin
+      const suratIzinFileName = `suratIzin/${user?.uid}/suratIzin_${user?.uid}`;
+      const suratIzinReference = storage().ref(suratIzinFileName);
+      const suratIzinFilePath = `${RNFS.DocumentDirectoryPath}/${suratIzin}`;
+      if (suratIzin) {
+        await RNFS.copyFile(suratIzin.uri, suratIzinFilePath);
+      }
+      const suratIzinBlob = await RNFS.readFile(suratIzinFilePath, 'base64');
+
+      await suratIzinReference.putString(suratIzinBlob, 'base64');
+      const suratIzinUrl = await suratIzinReference.getDownloadURL();
+
+      await firestore().collection('users').doc(user?.uid).set({
+        namaLengkap: fullName,
+        nik: nik,
+        email: email,
+        nomor: nomor,
+        alamat: alamatGOR,
+        namaGOR: namaGor,
+        waktuBuka: selectedWaktuBuka,
+        waktuTutup: selectedWaktuTutup,
+        jumlahLapangan: jumlahLapangan,
+        fotoGor: fotoGORUrl,
+        fotoUser: fotoUserUrl,
+        suratIzin: suratIzinUrl,
+        user_uid: user?.uid,
+        status: 'Belum Terverifikasi',
       });
     } catch (error) {
       console.log('Error', error);
@@ -175,6 +177,8 @@ const Register = ({navigation}: Register) => {
         <Text style={styles.title}>Create your account</Text>
         <View style={styles.inputContainer}>
           <RegisterField
+            alamatValue={alamatGOR}
+            onChangeTextAlamatGOR={setAlamatGOR}
             nameValue={fullName}
             onChangeTextName={setFullName}
             nikValue={nik}
@@ -200,9 +204,9 @@ const Register = ({navigation}: Register) => {
             onPressUploadFotoGor={handleUploadFotoGor}
             onPressUploadFotoUser={handleUploadFotoUser}
             onPressUploadSuratIzin={handleUploadFotoSuratIzin}
-            fotoGorValue={fotoGor}
-            suratIzinValue={suratIzin}
-            fotoUserGor={fotoUser}
+            fotoGorValue={fotoGor?.name}
+            suratIzinValue={suratIzin?.name}
+            fotoUserGor={fotoUser?.name}
           />
           <RegisterButton onPress={handleSubmit} />
           <Footer
@@ -230,6 +234,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginBottom: 10,
     fontFamily: 'Poppins SemiBold',
+    color: '#AAC8A7',
   },
   inputContainer: {
     marginHorizontal: 20,

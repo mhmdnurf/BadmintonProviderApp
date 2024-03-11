@@ -7,17 +7,47 @@ import Footer from '../components/Footer';
 import LoginField from '../components/login/LoginField';
 import RootContainer from '../components/RootContainer';
 import BottomSpace from '../components/BottomSpace';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Login {
   navigation: any;
 }
 
 const Login = ({navigation}: Login) => {
-  const handleLogin = () => {
-    console.log('Login');
-    console.log('Email:', email);
-    console.log('Password:', password);
-    navigation.navigate('Home');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleLogin = async () => {
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(
+        email,
+        password,
+      );
+
+      const userDoc = firestore()
+        .collection('users')
+        .doc(userCredential.user.uid);
+
+      const docSnapshot = await userDoc.get();
+
+      if (docSnapshot.exists) {
+        const userData = docSnapshot.data();
+
+        const userRole = userData?.role;
+        if (userRole === 'pemilik') {
+          console.log('Login Pemilik berhasil');
+          const userToken = userCredential.user.uid;
+          await AsyncStorage.setItem('userToken', userToken);
+          navigation.replace('Home');
+        } else {
+          console.log('Login gagal');
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
   const handleRegister = () => {
     navigation.navigate('Register');
@@ -26,9 +56,6 @@ const Login = ({navigation}: Login) => {
   const handleForgot = () => {
     navigation.navigate('ForgotPassword');
   };
-
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
 
   return (
     <>
