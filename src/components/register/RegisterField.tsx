@@ -12,6 +12,8 @@ interface RegisterField {
   onChangeTextEmail: (text: string) => void;
   passwordValue: string;
   onChangeTextPassword: (text: string) => void;
+  selectedJenisKelaminValue: string;
+  onJenisKelaminValueChange: (itemValue: string, itemIndex: number) => void;
   selectedWaktuBukaValue: string;
   onWaktuBukaValueChange: (itemValue: string, itemIndex: number) => void;
   selectedWaktuTutupValue: string;
@@ -41,6 +43,8 @@ const RegisterField = ({
   onChangeTextEmail,
   passwordValue,
   onChangeTextPassword,
+  selectedJenisKelaminValue,
+  onJenisKelaminValueChange,
   selectedWaktuBukaValue,
   onWaktuBukaValueChange,
   selectedWaktuTutupValue,
@@ -76,6 +80,16 @@ const RegisterField = ({
         keyboardType="number-pad"
         maxLength={16}
       />
+      <View style={styles.picker}>
+        <Picker
+          selectedValue={selectedJenisKelaminValue}
+          onValueChange={onJenisKelaminValueChange}
+          style={styles.pickerText}>
+          <Picker.Item label="Jenis Kelamin" value="" />
+          <Picker.Item label="Laki-Laki" value="Laki-Laki" />
+          <Picker.Item label="Perempuan" value="Perempuan" />
+        </Picker>
+      </View>
       <InputField
         placeholder="Email"
         secureTextEntry={false}
@@ -105,7 +119,7 @@ const RegisterField = ({
           selectedValue={selectedWaktuBukaValue}
           onValueChange={onWaktuBukaValueChange}
           style={styles.pickerText}>
-          <Picker.Item label="Pilih Waktu Buka" value="" />
+          <Picker.Item label="Waktu Buka" value="" />
           <Picker.Item label="06.00" value="06.00" />
           <Picker.Item label="07.00" value="07.00" />
           <Picker.Item label="08.00" value="08.00" />
@@ -128,7 +142,7 @@ const RegisterField = ({
           style={styles.pickerText}
           selectedValue={selectedWaktuTutupValue}
           onValueChange={onWaktuTutupValueChange}>
-          <Picker.Item label="Pilih Waktu Tutup" value="" />
+          <Picker.Item label="Waktu Tutup" value="" />
           <Picker.Item label="06.00" value="06.00" />
           <Picker.Item label="15.00" value="15.00" />
           <Picker.Item label="16.00" value="16.00" />

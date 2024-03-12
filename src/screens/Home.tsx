@@ -11,6 +11,7 @@ import BottomSpace from '../components/BottomSpace';
 import InfoTagihan from '../components/home/InfoTagihan';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {StatusBar} from 'react-native';
 
 const Home = () => {
   const [fullName, setFullName] = React.useState('');
@@ -31,6 +32,7 @@ const Home = () => {
   }, [getUser]);
   return (
     <>
+      <StatusBar barStyle="dark-content" backgroundColor={'white'} />
       <RootContainer backgroundColor="white">
         <HeaderContainer>
           <Header title="Dashboard" marginBottom={40} />

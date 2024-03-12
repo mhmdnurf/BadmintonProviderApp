@@ -5,6 +5,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 const Navbar = () => {
   const [jumlahLapangan, setJumlahLapangan] = React.useState('');
+  const [hargaLapangan, setHargaLapangan] = React.useState('');
+  const [hargaMember, setHargaMember] = React.useState('');
   const user = auth().currentUser;
 
   const getUser = React.useCallback(async () => {
@@ -17,9 +19,31 @@ const Navbar = () => {
     setJumlahLapangan(data?.jumlahLapangan);
   }, [user]);
 
+  const fetchHargaLapangan = React.useCallback(async () => {
+    const userDocument = await firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .get();
+
+    const data = userDocument.data();
+    setHargaLapangan(data?.hargaLapangan);
+  }, [user]);
+
+  const fetchHargaMember = React.useCallback(async () => {
+    const userDocument = await firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .get();
+
+    const data = userDocument.data();
+    setHargaMember(data?.hargaMember);
+  }, [user]);
+
   React.useEffect(() => {
     getUser();
-  }, [getUser]);
+    fetchHargaLapangan();
+    fetchHargaMember;
+  }, [getUser, fetchHargaLapangan, fetchHargaMember]);
   const data = [
     {
       id: 1,
@@ -33,7 +57,7 @@ const Navbar = () => {
     {
       id: 2,
       title: 'Paket Lapangan',
-      informasi: '60000',
+      informasi: hargaLapangan ? hargaLapangan : 'Belum diatur',
       btnText: 'Edit',
       onPress: 'PaketLapangan',
       iconName: 'currency-usd',
@@ -42,7 +66,7 @@ const Navbar = () => {
     {
       id: 3,
       title: 'Paket Member',
-      informasi: '100000',
+      informasi: hargaMember ? hargaMember : 'Belum diatur',
       btnText: 'Edit',
       onPress: 'PaketMember',
       iconName: 'card-account-details-star-outline',

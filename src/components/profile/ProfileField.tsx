@@ -2,18 +2,34 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import InputField from '../InputField';
 
-const ProfileField = () => {
+interface ProfileField {
+  fullName: string;
+  jenisKelamin: string;
+  email: string;
+  nomor: string;
+  status: string;
+}
+
+const ProfileField = ({
+  fullName,
+  jenisKelamin,
+  email,
+  nomor,
+  status,
+}: ProfileField) => {
   return (
     <>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Nama Lengkap</Text>
-        <InputField value="Pedry" editable={false} />
+        <InputField value={fullName} editable={false} />
         <Text style={styles.label}>Jenis Kelamin</Text>
-        <InputField value="Laki-Laki" editable={false} />
+        <InputField value={jenisKelamin} editable={false} />
         <Text style={styles.label}>Email</Text>
-        <InputField value="zaldebarenz@gmail.com" editable={false} />
+        <InputField value={email} editable={false} />
         <Text style={styles.label}>Nomor HP</Text>
-        <InputField value="083801310191" editable={false} />
+        <InputField value={nomor} editable={false} />
+        <Text style={styles.label}>Status GOR</Text>
+        <InputField value={status} editable={false} />
       </View>
     </>
   );

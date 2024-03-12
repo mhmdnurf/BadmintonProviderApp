@@ -18,8 +18,10 @@ interface Login {
 const Login = ({navigation}: Login) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
       const userCredential = await auth().signInWithEmailAndPassword(
         email,
@@ -47,6 +49,8 @@ const Login = ({navigation}: Login) => {
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleRegister = () => {
@@ -76,7 +80,7 @@ const Login = ({navigation}: Login) => {
             onChangeTextEmail={setEmail}
             onChangeTextPassword={setPassword}
           />
-          <LoginButton onPress={handleLogin} />
+          <LoginButton onPress={handleLogin} isLoading={isLoading} />
           <Footer
             title="Belum punya akun?"
             subTitle="Register"

@@ -28,6 +28,7 @@ const Register = ({navigation}: Register) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [namaGor, setNamaGor] = React.useState('');
+  const [selectedJenisKelamin, setSelectedJenisKelamin] = React.useState('');
   const [selectedWaktuBuka, setSelectedWaktuBuka] = React.useState('');
   const [selectedWaktuTutup, setSelectedWaktuTutup] = React.useState('');
   const [jumlahLapangan, setJumlahLapangan] = React.useState('');
@@ -39,6 +40,7 @@ const Register = ({navigation}: Register) => {
   );
   const [nomor, setNomor] = React.useState('');
   const [alamatGOR, setAlamatGOR] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleNavigateLogin = () => {
     navigation.navigate('Login');
@@ -108,6 +110,7 @@ const Register = ({navigation}: Register) => {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     const userCredential = await auth().createUserWithEmailAndPassword(
       email,
       password,
@@ -168,6 +171,8 @@ const Register = ({navigation}: Register) => {
       });
     } catch (error) {
       console.log('Error', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -177,6 +182,10 @@ const Register = ({navigation}: Register) => {
         <Text style={styles.title}>Create your account</Text>
         <View style={styles.inputContainer}>
           <RegisterField
+            selectedJenisKelaminValue={selectedJenisKelamin}
+            onJenisKelaminValueChange={itemValue =>
+              setSelectedJenisKelamin(itemValue)
+            }
             alamatValue={alamatGOR}
             onChangeTextAlamatGOR={setAlamatGOR}
             nameValue={fullName}
@@ -208,7 +217,7 @@ const Register = ({navigation}: Register) => {
             suratIzinValue={suratIzin?.name}
             fotoUserGor={fotoUser?.name}
           />
-          <RegisterButton onPress={handleSubmit} />
+          <RegisterButton onPress={handleSubmit} isLoading={isLoading} />
           <Footer
             title="Sudah punya akun?"
             subTitle="Login"

@@ -1,14 +1,20 @@
 import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import {Image, StyleSheet, View} from 'react-native';
 
-const ImageProfile = () => {
+interface ImageProfile {
+  uri: string;
+}
+
+const ImageProfile = ({uri}: ImageProfile) => {
   return (
     <>
       <View style={styles.imageContainer}>
-        <Image
-          source={require('../../assets/img/user.jpg')}
-          style={styles.image}
-        />
+        {uri ? (
+          <Image source={{uri: uri}} style={styles.image} />
+        ) : (
+          <ActivityIndicator size="large" color="#AAC8A7" />
+        )}
       </View>
     </>
   );

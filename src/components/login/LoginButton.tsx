@@ -1,16 +1,36 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 interface LoginButton {
   onPress: () => void;
+  isLoading: boolean;
 }
 
-const LoginButton = ({onPress}: LoginButton) => {
+const LoginButton = ({onPress, isLoading}: LoginButton) => {
   return (
     <>
-      <View style={styles.btnContainer}>
-        <Pressable onPress={onPress}>
-          <Text style={styles.btnText}>Login</Text>
+      <View>
+        <Pressable
+          onPress={onPress}
+          style={({pressed}) => [
+            styles.btnContainer,
+            {
+              backgroundColor: pressed ? '#7F9F80' : '#AAC8A7',
+              borderWidth: pressed ? 3 : 0,
+              borderColor: pressed ? '#EEEEEE' : '#AAC8A7',
+            },
+          ]}>
+          {isLoading ? (
+            <ActivityIndicator size={25} color="white" />
+          ) : (
+            <Text style={styles.btnText}>Login</Text>
+          )}
         </Pressable>
       </View>
     </>
@@ -25,8 +45,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 15,
     width: '100%',
-    backgroundColor: '#AAC8A7',
     borderRadius: 15,
+  },
+  btnColor: {
+    backgroundColor: '#AAC8A7',
   },
   btnText: {
     fontSize: 16,
