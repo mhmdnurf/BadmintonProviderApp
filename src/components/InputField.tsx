@@ -48,5 +48,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     flexGrow: 1,
     color: 'black',
+    fontFamily: 'Poppins Regular',
   },
 });

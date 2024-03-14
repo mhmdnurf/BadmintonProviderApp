@@ -3,7 +3,11 @@ import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-const Waktu = () => {
+interface Waktu {
+  status: string;
+}
+
+const Waktu = ({status}: Waktu) => {
   const [waktuBuka, setWaktuBuka] = React.useState('');
   const [waktuTutup, setWaktuTutup] = React.useState('');
   const user = auth().currentUser;
@@ -24,7 +28,11 @@ const Waktu = () => {
   return (
     <>
       <View style={styles.timeContainer}>
-        <Text style={styles.timeText}>{`${waktuBuka} - ${waktuTutup}`}</Text>
+        <Text style={styles.timeText}>
+          {status === 'Belum Terverifikasi' || status === 'Ditolak'
+            ? 'Belum Aktif'
+            : `${waktuBuka} - ${waktuTutup}`}
+        </Text>
       </View>
     </>
   );

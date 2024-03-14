@@ -15,7 +15,7 @@ import {StatusBar} from 'react-native';
 
 const Home = () => {
   const [fullName, setFullName] = React.useState('');
-
+  const [status, setStatus] = React.useState('');
   const user = auth().currentUser;
   const getUser = React.useCallback(async () => {
     const userDocument = await firestore()
@@ -25,6 +25,7 @@ const Home = () => {
 
     const data = userDocument.data();
     setFullName(data?.namaLengkap);
+    setStatus(data?.status);
   }, [user]);
 
   React.useEffect(() => {
@@ -36,8 +37,8 @@ const Home = () => {
       <RootContainer backgroundColor="white">
         <HeaderContainer>
           <Header title="Dashboard" marginBottom={40} />
-          <DashboardHeader fullName={fullName} />
-          <Waktu />
+          <DashboardHeader fullName={fullName} status={status} />
+          <Waktu status={status} />
           <ContentHeader title="Overview" />
           <Navbar />
           <InfoPendapatan pendapatan={1000000} />
