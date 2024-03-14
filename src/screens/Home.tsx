@@ -22,6 +22,7 @@ interface Home {
 const Home = ({navigation}: Home) => {
   const isFocused = useIsFocused();
   const [fullName, setFullName] = React.useState('');
+  const [catatan, setCatatan] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
   const user = auth().currentUser;
@@ -40,6 +41,7 @@ const Home = ({navigation}: Home) => {
 
     setFullName(userData?.namaLengkap);
     setStatus(gorData?.status);
+    setCatatan(gorData?.catatan);
     setRefreshing(false);
   }, [user]);
 
@@ -59,7 +61,7 @@ const Home = ({navigation}: Home) => {
           <Header title="Dashboard" marginBottom={40} />
           <DashboardHeader fullName={fullName} status={status} />
           <Waktu status={status} />
-          <Announcement status={status} />
+          <Announcement status={status} catatan={catatan} />
           <ContentHeader title="Overview" />
           <Navbar navigation={navigation} />
           <InfoPendapatan pendapatan={1000000} />

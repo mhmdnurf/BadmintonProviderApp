@@ -3,24 +3,30 @@ import {StyleSheet, Text, View} from 'react-native';
 
 interface Announcement {
   status: string;
+  catatan: string;
 }
 
-const Announcement = ({status}: Announcement) => {
+const Announcement = ({status, catatan}: Announcement) => {
   return (
     <>
       <View style={styles.container}>
         <Text style={styles.title}>Announcement</Text>
         <View style={styles.cardContainer}>
-          {status === 'Belum Terverifikasi' || status === 'Ditolak' ? (
+          <Text style={styles.cardText}>
+            Selamat datang di aplikasi Badminton Booking App
+          </Text>
+          {status === 'Belum Terverifikasi' ? (
             <>
-              <Text style={styles.cardText}>
-                Selamat datang di aplikasi Badminton Booking App
-              </Text>
               <Text style={styles.cardText}>
                 Selagi menunggu verifikasi akun, silahkan atur terlebih dahulu
                 harga paket lapangan dan paket member GOR anda sebagai bagian
                 dari verifikasi.
               </Text>
+            </>
+          ) : status === 'Ditolak' ? (
+            <>
+              <Text style={styles.cardText}>Catatan Penolakan :</Text>
+              <Text style={styles.ditolakText}>{catatan}</Text>
             </>
           ) : (
             <Text style={styles.cardText}>
@@ -62,5 +68,12 @@ const styles = StyleSheet.create({
     color: '#31363F',
     fontFamily: 'Poppins SemiBold',
     textAlign: 'justify',
+  },
+  ditolakText: {
+    fontSize: 16,
+    color: '#FF8080',
+    fontFamily: 'Poppins Bold',
+    textAlign: 'justify',
+    textDecorationLine: 'underline',
   },
 });

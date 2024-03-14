@@ -12,9 +12,13 @@ const DashboardHeader = ({fullName, status}: DashboardHeader) => {
       <View style={styles.container}>
         <Text style={styles.title}>Halo, {fullName}</Text>
         <Text style={styles.subTitle}>
-          {status === 'Belum Terverifikasi' || status === 'Ditolak'
-            ? 'Mohon tunggu hingga akun anda diverifikasi oleh admin'
-            : 'Sudah cek pendapatan hari ini?'}
+          {status === 'Belum Terverifikasi' ? (
+            'Mohon tunggu hingga akun anda diverifikasi oleh admin'
+          ) : status === 'Ditolak' ? (
+            <Text style={styles.ditolak}>Akun anda ditolak oleh admin</Text>
+          ) : (
+            'Sudah cek pendapatan hari ini?'
+          )}
         </Text>
       </View>
     </>
@@ -36,5 +40,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Poppins SemiBold',
     color: '#41444B',
+  },
+  ditolak: {
+    fontSize: 18,
+    fontFamily: 'Poppins SemiBold',
+    color: '#FF8080',
   },
 });

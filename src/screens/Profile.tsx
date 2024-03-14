@@ -27,7 +27,12 @@ const Profile = ({navigation}: Profile) => {
           .get();
 
         const data = userDoc.data();
-        setUserData(data);
+
+        const gorDoc = await firestore().collection('gor').doc(user.uid).get();
+
+        const gorData = gorDoc.data();
+
+        setUserData({...data, status: gorData?.status});
       }
     } catch (error) {
       console.log(error);

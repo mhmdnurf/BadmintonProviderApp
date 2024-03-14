@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: 18,
     textAlign: 'center',
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     color: 'white',
   },
 });
