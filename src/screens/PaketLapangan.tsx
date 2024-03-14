@@ -20,11 +20,20 @@ const PaketLapangan = ({navigation}: PaketLapangan) => {
   const [hargaLapangan, setHargaLapangan] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const fetchHargaLapangan = React.useCallback(async () => {
+    const user = auth().currentUser;
+    const query = firestore().collection('gor').doc(user?.uid).get();
+    query.then(doc => {
+      const data = doc.data();
+      setHargaLapangan(data?.hargaLapangan);
+    });
+  }, []);
+
   const handleSubmit = () => {
     try {
       setIsLoading(true);
       const user = auth().currentUser;
-      firestore().collection('users').doc(user?.uid).update({
+      firestore().collection('gor').doc(user?.uid).update({
         hargaLapangan: hargaLapangan,
       });
     } catch (error) {
@@ -34,6 +43,10 @@ const PaketLapangan = ({navigation}: PaketLapangan) => {
       navigation.navigate('Home');
     }
   };
+
+  React.useEffect(() => {
+    fetchHargaLapangan();
+  }, [fetchHargaLapangan]);
   return (
     <>
       <RootContainer backgroundColor="white">

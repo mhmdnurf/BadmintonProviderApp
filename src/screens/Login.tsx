@@ -38,7 +38,7 @@ const Login = ({navigation}: Login) => {
         const userData = docSnapshot.data();
 
         const userRole = userData?.role;
-        if (userRole === 'pemilik') {
+        if (userRole === 'provider') {
           console.log('Login Pemilik berhasil');
           const userToken = userCredential.user.uid;
           await AsyncStorage.setItem('userToken', userToken);

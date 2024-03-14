@@ -186,7 +186,7 @@ const RegisterField = ({
       </View>
       <View style={styles.uploadContainer}>
         <InputField
-          placeholder="Foto GOR"
+          placeholder="Foto GOR (JPG)"
           secureTextEntry={false}
           value={fotoGorValue}
           editable={false}
@@ -197,7 +197,7 @@ const RegisterField = ({
       </View>
       <View style={styles.uploadContainer}>
         <InputField
-          placeholder="Foto Pemilik GOR"
+          placeholder="Foto Pemilik GOR (JPG)"
           secureTextEntry={false}
           value={fotoUserGor}
           editable={false}

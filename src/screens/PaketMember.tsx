@@ -20,11 +20,20 @@ const PaketMember = ({navigation}: PaketMember) => {
   const [hargaMember, setHargaMember] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const fetchHargaMember = React.useCallback(async () => {
+    const user = auth().currentUser;
+    const query = firestore().collection('gor').doc(user?.uid).get();
+    query.then(doc => {
+      const data = doc.data();
+      setHargaMember(data?.hargaMember);
+    });
+  }, []);
+
   const handleSubmit = () => {
     try {
       setIsLoading(true);
       const user = auth().currentUser;
-      firestore().collection('users').doc(user?.uid).update({
+      firestore().collection('gor').doc(user?.uid).update({
         hargaMember: hargaMember,
       });
     } catch (error) {
@@ -34,6 +43,10 @@ const PaketMember = ({navigation}: PaketMember) => {
       navigation.navigate('Home');
     }
   };
+
+  React.useEffect(() => {
+    fetchHargaMember();
+  }, [fetchHargaMember]);
   return (
     <>
       <RootContainer backgroundColor="white">

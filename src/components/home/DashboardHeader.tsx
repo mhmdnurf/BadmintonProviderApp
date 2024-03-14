@@ -11,7 +11,7 @@ const DashboardHeader = ({fullName, status}: DashboardHeader) => {
     <>
       <View style={styles.container}>
         <Text style={styles.title}>Halo, {fullName}</Text>
-        <Text style={styles.title}>
+        <Text style={styles.subTitle}>
           {status === 'Belum Terverifikasi' || status === 'Ditolak'
             ? 'Mohon tunggu hingga akun anda diverifikasi oleh admin'
             : 'Sudah cek pendapatan hari ini?'}
@@ -29,7 +29,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
+    color: '#41444B',
+  },
+  subTitle: {
+    fontSize: 18,
+    fontFamily: 'Poppins SemiBold',
     color: '#41444B',
   },
 });

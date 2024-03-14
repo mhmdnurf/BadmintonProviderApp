@@ -13,7 +13,7 @@ const Waktu = ({status}: Waktu) => {
   const user = auth().currentUser;
   const fetchWaktu = React.useCallback(async () => {
     const userDocument = await firestore()
-      .collection('users')
+      .collection('gor')
       .doc(user?.uid)
       .get();
 

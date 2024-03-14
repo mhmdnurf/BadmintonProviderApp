@@ -21,7 +21,7 @@ const TambahLapangan = ({navigation}: TambahLapangan) => {
 
   const fetchJumlahLapangan = React.useCallback(() => {
     const user = auth().currentUser;
-    const query = firestore().collection('users').doc(user?.uid).get();
+    const query = firestore().collection('gor').doc(user?.uid).get();
     query.then(doc => {
       const data = doc.data();
       setJumlahLapangan(data?.jumlahLapangan);
@@ -32,7 +32,7 @@ const TambahLapangan = ({navigation}: TambahLapangan) => {
     try {
       setIsLoading(true);
       const user = auth().currentUser;
-      firestore().collection('users').doc(user?.uid).update({
+      firestore().collection('gor').doc(user?.uid).update({
         jumlahLapangan: jumlahLapangan,
       });
     } catch (error) {

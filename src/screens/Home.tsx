@@ -12,37 +12,54 @@ import InfoTagihan from '../components/home/InfoTagihan';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {StatusBar} from 'react-native';
+import Announcement from '../components/home/Announcement';
+import {useIsFocused} from '@react-navigation/native';
 
 interface Home {
   navigation: any;
 }
 
 const Home = ({navigation}: Home) => {
+  const isFocused = useIsFocused();
   const [fullName, setFullName] = React.useState('');
   const [status, setStatus] = React.useState('');
+  const [refreshing, setRefreshing] = React.useState(false);
   const user = auth().currentUser;
-  const getUser = React.useCallback(async () => {
-    const userDocument = await firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .get();
+  const fetchData = React.useCallback(async () => {
+    setRefreshing(true);
+    const userDocPromise = firestore().collection('users').doc(user?.uid).get();
+    const gorDocPromise = firestore().collection('gor').doc(user?.uid).get();
 
-    const data = userDocument.data();
-    setFullName(data?.namaLengkap);
-    setStatus(data?.status);
+    const [userDocument, gorDocument] = await Promise.all([
+      userDocPromise,
+      gorDocPromise,
+    ]);
+
+    const userData = userDocument.data();
+    const gorData = gorDocument.data();
+
+    setFullName(userData?.namaLengkap);
+    setStatus(gorData?.status);
+    setRefreshing(false);
   }, [user]);
 
   React.useEffect(() => {
-    getUser();
-  }, [getUser]);
+    if (isFocused) {
+      fetchData();
+    }
+  }, [fetchData, isFocused]);
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'white'} />
-      <RootContainer backgroundColor="white">
+      <RootContainer
+        backgroundColor="white"
+        refreshing={refreshing}
+        onRefresh={fetchData}>
         <HeaderContainer>
           <Header title="Dashboard" marginBottom={40} />
           <DashboardHeader fullName={fullName} status={status} />
           <Waktu status={status} />
+          <Announcement status={status} />
           <ContentHeader title="Overview" />
           <Navbar navigation={navigation} />
           <InfoPendapatan pendapatan={1000000} />

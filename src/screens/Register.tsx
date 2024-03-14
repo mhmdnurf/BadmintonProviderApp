@@ -153,26 +153,35 @@ const Register = ({navigation}: Register) => {
       await suratIzinReference.putString(suratIzinBlob, 'base64');
       const suratIzinUrl = await suratIzinReference.getDownloadURL();
 
-      await firestore().collection('users').doc(user?.uid).set({
+      let userDoc = firestore().collection('users').doc(user?.uid).set({
         namaLengkap: fullName,
         nik: nik,
         email: email,
         nomor: nomor,
-        alamat: alamatGOR,
+        alamatGOR: alamatGOR,
+        fotoUser: fotoUserUrl,
+        user_uid: user?.uid,
+        role: 'provider',
+      });
+
+      let gorDoc = firestore().collection('gor').doc(user?.uid).set({
         namaGOR: namaGor,
+        alamat: alamatGOR,
         waktuBuka: selectedWaktuBuka,
         waktuTutup: selectedWaktuTutup,
         jumlahLapangan: jumlahLapangan,
-        fotoGor: fotoGORUrl,
-        fotoUser: fotoUserUrl,
-        suratIzin: suratIzinUrl,
+        fotoGOR: fotoGORUrl,
         user_uid: user?.uid,
         status: 'Belum Terverifikasi',
+        suratIzin: suratIzinUrl,
       });
+
+      await Promise.all([userDoc, gorDoc]);
     } catch (error) {
       console.log('Error', error);
     } finally {
       setIsLoading(false);
+      navigation.replace('Login');
     }
   };
   return (

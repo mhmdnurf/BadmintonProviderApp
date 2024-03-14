@@ -16,45 +16,24 @@ const Navbar = ({navigation}: Navbar) => {
   const [hargaMember, setHargaMember] = React.useState('');
   const user = auth().currentUser;
 
-  const fetchJumlahLapangan = React.useCallback(async () => {
+  const fetchData = React.useCallback(async () => {
     const userDocument = await firestore()
-      .collection('users')
+      .collection('gor')
       .doc(user?.uid)
       .get();
 
     const data = userDocument.data();
     setJumlahLapangan(data?.jumlahLapangan);
-  }, [user]);
-
-  const fetchHargaLapangan = React.useCallback(async () => {
-    const userDocument = await firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .get();
-
-    const data = userDocument.data();
     setHargaLapangan(data?.hargaLapangan);
-  }, [user]);
-
-  const fetchHargaMember = React.useCallback(async () => {
-    const userDocument = await firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .get();
-
-    const data = userDocument.data();
     setHargaMember(data?.hargaMember);
   }, [user]);
 
   React.useEffect(() => {
     if (isFocused) {
-      fetchJumlahLapangan();
-      fetchHargaLapangan();
-      fetchHargaMember;
+      fetchData();
     }
-  }, [fetchJumlahLapangan, fetchHargaLapangan, fetchHargaMember, isFocused]);
-
-  console.log('hargaMember', hargaMember);
+  }, [fetchData, isFocused]);
+  console.log(hargaMember);
   return (
     <>
       <ScrollView
@@ -71,7 +50,7 @@ const Navbar = ({navigation}: Navbar) => {
         />
         <OverviewCard
           title="Paket Lapangan"
-          informasi={hargaLapangan}
+          informasi={hargaLapangan ? hargaLapangan : 'Belum diatur'}
           btnText="Edit"
           onPress={() => navigation.navigate('PaketLapangan')}
           iconName="currency-usd"
@@ -79,7 +58,7 @@ const Navbar = ({navigation}: Navbar) => {
         />
         <OverviewCard
           title="Paket Member"
-          informasi={hargaMember}
+          informasi={hargaMember ? hargaMember : 'Belum diatur'}
           btnText="Edit"
           onPress={() => navigation.navigate('PaketMember')}
           iconName="card-account-details-star-outline"
