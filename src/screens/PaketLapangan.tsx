@@ -1,19 +1,65 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Header from '../components/Header';
 import RootContainer from '../components/RootContainer';
 import InputField from '../components/InputField';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-const PaketLapangan = () => {
+interface PaketLapangan {
+  navigation: any;
+}
+
+const PaketLapangan = ({navigation}: PaketLapangan) => {
+  const [hargaLapangan, setHargaLapangan] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleSubmit = () => {
+    try {
+      setIsLoading(true);
+      const user = auth().currentUser;
+      firestore().collection('users').doc(user?.uid).update({
+        hargaLapangan: hargaLapangan,
+      });
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setIsLoading(false);
+      navigation.navigate('Home');
+    }
+  };
   return (
     <>
       <RootContainer backgroundColor="white">
         <View style={styles.container}>
           <Header title="Paket Lapangan" marginBottom={40} />
           <Text style={styles.label}>Harga Paket Lapangan (2 jam)</Text>
-          <InputField placeholder="Harga Lapangan" />
-          <Pressable style={styles.btnContainer}>
-            <Text style={styles.btnText}>Submit</Text>
+          <InputField
+            placeholder="Harga Lapangan"
+            value={hargaLapangan}
+            onChangeText={setHargaLapangan}
+          />
+          <Pressable
+            style={({pressed}) => [
+              styles.btnContainer,
+              {
+                backgroundColor: pressed ? '#7F9F80' : '#AAC8A7',
+                borderWidth: pressed ? 3 : 0,
+                borderColor: pressed ? '#EEEEEE' : '#AAC8A7',
+              },
+            ]}
+            onPress={handleSubmit}>
+            {isLoading ? (
+              <ActivityIndicator size={25} color="white" />
+            ) : (
+              <Text style={styles.btnText}>Submit</Text>
+            )}
           </Pressable>
         </View>
       </RootContainer>
@@ -30,8 +76,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 18,
-    fontWeight: '600',
     color: '#41444B',
+    fontFamily: 'Poppins SemiBold',
   },
   btnContainer: {
     backgroundColor: '#AAC8A7',
@@ -41,8 +87,8 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: 16,
-    fontWeight: '600',
     color: 'white',
     textAlign: 'center',
+    fontFamily: 'Poppins SemiBold',
   },
 });

@@ -13,7 +13,11 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {StatusBar} from 'react-native';
 
-const Home = () => {
+interface Home {
+  navigation: any;
+}
+
+const Home = ({navigation}: Home) => {
   const [fullName, setFullName] = React.useState('');
   const [status, setStatus] = React.useState('');
   const user = auth().currentUser;
@@ -40,7 +44,7 @@ const Home = () => {
           <DashboardHeader fullName={fullName} status={status} />
           <Waktu status={status} />
           <ContentHeader title="Overview" />
-          <Navbar />
+          <Navbar navigation={navigation} />
           <InfoPendapatan pendapatan={1000000} />
           <InfoTagihan tagihan={500000} />
         </HeaderContainer>

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
 
 interface OverviewCard {
   title: string;
@@ -20,7 +19,6 @@ const OverviewCard = ({
   iconName,
   backgroundColor,
 }: OverviewCard) => {
-  const navigation = useNavigation();
   return (
     <>
       <View style={styles.container}>
@@ -32,7 +30,7 @@ const OverviewCard = ({
         <View style={styles.btnContainer}>
           <Pressable
             style={[styles.btnTambah, {backgroundColor}]}
-            onPress={() => navigation.navigate(onPress)}>
+            onPress={onPress}>
             <Text style={styles.btnText}>{btnText}</Text>
           </Pressable>
         </View>
