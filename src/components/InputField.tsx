@@ -9,6 +9,7 @@ interface InputField {
   editable?: boolean;
   keyboardType?: KeyboardTypeOptions;
   maxLength?: number;
+  numberOfLines?: number;
 }
 
 const InputField = ({
@@ -19,6 +20,7 @@ const InputField = ({
   editable,
   keyboardType = 'default',
   maxLength,
+  numberOfLines,
 }: InputField) => {
   return (
     <>
@@ -32,6 +34,7 @@ const InputField = ({
         editable={editable}
         keyboardType={keyboardType}
         maxLength={maxLength}
+        numberOfLines={numberOfLines}
       />
     </>
   );
@@ -47,6 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 5,
     flexGrow: 1,
+    flexShrink: 1,
     color: 'black',
     fontFamily: 'Poppins Regular',
   },

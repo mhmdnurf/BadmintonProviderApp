@@ -57,7 +57,7 @@ const Profile = ({navigation}: Profile) => {
   };
 
   const handleNavigateToEditProfile = () => {
-    console.log('Edit Profile');
+    navigation.navigate('EditProfile', {userData});
   };
 
   React.useEffect(() => {

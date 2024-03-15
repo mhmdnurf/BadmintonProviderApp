@@ -33,7 +33,6 @@ const Navbar = ({navigation}: Navbar) => {
       fetchData();
     }
   }, [fetchData, isFocused]);
-  console.log(hargaMember);
   return (
     <>
       <ScrollView
