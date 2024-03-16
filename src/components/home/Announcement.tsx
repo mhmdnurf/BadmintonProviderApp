@@ -1,12 +1,16 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 
 interface Announcement {
   status: string;
   catatan: string;
+  navigation: any;
 }
 
-const Announcement = ({status, catatan}: Announcement) => {
+const Announcement = ({status, catatan, navigation}: Announcement) => {
+  const handleNavigateEditProfile = () => {
+    navigation.navigate('Profile');
+  };
   return (
     <>
       <View style={styles.container}>
@@ -15,7 +19,7 @@ const Announcement = ({status, catatan}: Announcement) => {
           <Text style={styles.cardText}>
             Selamat datang di aplikasi Badminton Booking App
           </Text>
-          {status === 'Belum Terverifikasi' ? (
+          {status === 'Menunggu Aktivasi' ? (
             <>
               <Text style={styles.cardText}>
                 Selagi menunggu verifikasi akun, silahkan atur terlebih dahulu
@@ -26,7 +30,9 @@ const Announcement = ({status, catatan}: Announcement) => {
           ) : status === 'Ditolak' ? (
             <>
               <Text style={styles.cardText}>Catatan Penolakan :</Text>
-              <Text style={styles.ditolakText}>{catatan}</Text>
+              <Pressable onPress={handleNavigateEditProfile}>
+                <Text style={styles.ditolakText}>{catatan}</Text>
+              </Pressable>
             </>
           ) : (
             <Text style={styles.cardText}>

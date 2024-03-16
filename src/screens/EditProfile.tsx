@@ -12,6 +12,7 @@ interface EditProfile {
   email: string;
   nomor: string;
   route: any;
+  navigation: any;
 }
 
 type DocumentPick = {
@@ -25,7 +26,7 @@ type DataGOR = {
   status: string;
 };
 
-const EditProfile = ({route}: EditProfile) => {
+const EditProfile = ({route, navigation}: EditProfile) => {
   const {userData} = route.params;
   const [namaLengkap, setNamaLengkap] = React.useState(
     userData?.namaLengkap || '',
@@ -34,6 +35,7 @@ const EditProfile = ({route}: EditProfile) => {
   const [suratIzin, setSuratIzin] = React.useState<DocumentPick>();
   const [fotoGOR, setFotoGOR] = React.useState<DocumentPick>();
   const [dataGOR, setDataGOR] = React.useState({} as DataGOR);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const fetchDataGOR = React.useCallback(async () => {
     try {
@@ -53,23 +55,27 @@ const EditProfile = ({route}: EditProfile) => {
   }, []);
 
   const handleSubmit = () => {
-    const a = 1;
-
-    let selected = a ?? 'default';
-    console.log(selected);
+    setIsLoading(true);
+    const user = auth().currentUser;
     try {
       const finalSuratIzin = suratIzin ?? dataGOR.suratIzin;
       const finalFotoGOR = fotoGOR ?? dataGOR.fotoGOR;
 
-      console.log('Data', {
+      const query = firestore().collection('gor').doc(user?.uid);
+      query.update({
         namaLengkap,
         nomor,
-        suratIzin: finalSuratIzin,
         fotoGOR: finalFotoGOR,
+        suratIzin: finalSuratIzin,
         status: 'Menunggu Aktivasi',
       });
+
+      console.log('Data berhasil diupdate');
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
+      navigation.goBack();
     }
   };
 
@@ -133,6 +139,7 @@ const EditProfile = ({route}: EditProfile) => {
           onPressSubmit={handleSubmit}
           onChangeNamaLengkap={setNamaLengkap}
           onChangeNomor={setNomor}
+          isLoading={isLoading}
         />
       </RootContainer>
     </>

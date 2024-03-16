@@ -172,8 +172,9 @@ const Register = ({navigation}: Register) => {
         jumlahLapangan: jumlahLapangan,
         fotoGOR: fotoGORUrl,
         user_uid: user?.uid,
-        status: 'Belum Terverifikasi',
+        status: 'Menunggu Aktivasi',
         suratIzin: suratIzinUrl,
+        role: 'provider',
       });
 
       await Promise.all([userDoc, gorDoc]);

@@ -29,7 +29,7 @@ const Waktu = ({status}: Waktu) => {
     <>
       <View style={styles.timeContainer}>
         <Text style={styles.timeText}>
-          {status === 'Belum Terverifikasi' || status === 'Ditolak'
+          {status === 'Menunggu Aktivasi' || status === 'Ditolak'
             ? 'Belum Aktif'
             : `${waktuBuka} - ${waktuTutup}`}
         </Text>

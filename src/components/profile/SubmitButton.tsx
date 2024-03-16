@@ -1,11 +1,12 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text} from 'react-native';
+import {ActivityIndicator, Pressable, StyleSheet, Text} from 'react-native';
 
 interface SubmitButton {
   onPress: () => void;
+  isLoading: boolean;
 }
 
-const SubmitButton = ({onPress}: SubmitButton) => {
+const SubmitButton = ({onPress, isLoading}: SubmitButton) => {
   return (
     <>
       <Pressable
@@ -17,7 +18,11 @@ const SubmitButton = ({onPress}: SubmitButton) => {
           },
         ]}
         onPress={onPress}>
-        <Text style={styles.text}>Submit</Text>
+        {isLoading ? (
+          <ActivityIndicator size={25} color="white" />
+        ) : (
+          <Text style={styles.text}>Submit</Text>
+        )}
       </Pressable>
     </>
   );

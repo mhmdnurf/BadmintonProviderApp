@@ -12,7 +12,7 @@ const DashboardHeader = ({fullName, status}: DashboardHeader) => {
       <View style={styles.container}>
         <Text style={styles.title}>Halo, {fullName}</Text>
         <Text style={styles.subTitle}>
-          {status === 'Belum Terverifikasi' ? (
+          {status === 'Menunggu Aktivasi' ? (
             'Mohon tunggu hingga akun anda diverifikasi oleh admin'
           ) : status === 'Ditolak' ? (
             <Text style={styles.ditolak}>Akun anda ditolak oleh admin</Text>

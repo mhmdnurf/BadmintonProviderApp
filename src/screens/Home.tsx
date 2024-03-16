@@ -61,7 +61,11 @@ const Home = ({navigation}: Home) => {
           <Header title="Dashboard" marginBottom={40} />
           <DashboardHeader fullName={fullName} status={status} />
           <Waktu status={status} />
-          <Announcement status={status} catatan={catatan} />
+          <Announcement
+            status={status}
+            catatan={catatan}
+            navigation={navigation}
+          />
           <ContentHeader title="Overview" />
           <Navbar navigation={navigation} />
           <InfoPendapatan pendapatan={1000000} />

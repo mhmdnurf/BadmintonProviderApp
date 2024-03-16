@@ -13,6 +13,7 @@ interface EditField {
   onPressFotoGOR: () => void;
   onPressSuratIzin: () => void;
   onPressSubmit: () => void;
+  isLoading: boolean;
 }
 
 const EditField = ({
@@ -25,6 +26,7 @@ const EditField = ({
   onPressFotoGOR,
   onPressSuratIzin,
   onPressSubmit,
+  isLoading,
 }: EditField) => {
   return (
     <>
@@ -57,7 +59,7 @@ const EditField = ({
             <Text style={styles.btnText}>+</Text>
           </Pressable>
         </View>
-        <SubmitButton onPress={onPressSubmit} />
+        <SubmitButton onPress={onPressSubmit} isLoading={isLoading} />
       </View>
     </>
   );
