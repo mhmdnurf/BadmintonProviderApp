@@ -35,5 +35,5 @@ const styles = StyleSheet.create({
   booked: {
     backgroundColor: 'grey',
   },
-  title: {fontSize: 18, color: 'white', fontWeight: '600'},
+  title: {fontSize: 18, color: 'white', fontFamily: 'Nunito Bold'},
 });

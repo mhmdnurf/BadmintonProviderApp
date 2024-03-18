@@ -10,14 +10,18 @@ import EditButton from '../components/profile/EditButton';
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import {useIsFocused} from '@react-navigation/native';
 
 interface Profile {
   navigation: any;
 }
 
 const Profile = ({navigation}: Profile) => {
+  const isFocused = useIsFocused();
   const [userData, setUserData] = React.useState<any>({});
+  const [refreshing, setRefreshing] = React.useState(false);
   const fetchUser = React.useCallback(async () => {
+    setRefreshing(true);
     try {
       const user = auth().currentUser;
       if (user) {
@@ -36,6 +40,8 @@ const Profile = ({navigation}: Profile) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setRefreshing(false);
     }
   }, []);
 
@@ -61,11 +67,16 @@ const Profile = ({navigation}: Profile) => {
   };
 
   React.useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    if (isFocused) {
+      fetchUser();
+    }
+  }, [fetchUser, isFocused]);
   return (
     <>
-      <RootContainer backgroundColor="white">
+      <RootContainer
+        backgroundColor="white"
+        refreshing={refreshing}
+        onRefresh={fetchUser}>
         <Header title="Profile" />
         <ImageProfile uri={userData.fotoUser} />
         <EditButton onPress={handleNavigateToEditProfile} />

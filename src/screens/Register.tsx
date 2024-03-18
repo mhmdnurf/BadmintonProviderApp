@@ -175,6 +175,7 @@ const Register = ({navigation}: Register) => {
         status: 'Menunggu Aktivasi',
         suratIzin: suratIzinUrl,
         role: 'provider',
+        jenisKelamin: selectedJenisKelamin,
       });
 
       await Promise.all([userDoc, gorDoc]);
