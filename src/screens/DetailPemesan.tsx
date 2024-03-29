@@ -8,8 +8,8 @@ interface DetailPemesan {
 }
 
 const DetailPemesan = ({route}: DetailPemesan) => {
-  const {id} = route.params;
-  console.log(id);
+  const {booking_uid} = route.params;
+  console.log(booking_uid);
   return (
     <>
       <RootContainer backgroundColor="white">

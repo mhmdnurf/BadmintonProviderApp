@@ -4,15 +4,14 @@ import {Pressable, StyleSheet, Text} from 'react-native';
 interface JadwalItem {
   title: string;
   isBooked: boolean;
-  onPress: (booking_uid: string) => () => void;
-  booking_uid: string;
+  onPress: () => void;
 }
 
-const JadwalItem = ({title, isBooked, onPress, booking_uid}: JadwalItem) => {
+const JadwalItem = ({title, isBooked, onPress}: JadwalItem) => {
   return (
     <>
       <Pressable
-        onPress={onPress(booking_uid)}
+        onPress={onPress}
         style={[styles.container, isBooked ? styles.booked : {}]}>
         <Text style={styles.title}>{title}</Text>
       </Pressable>

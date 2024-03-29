@@ -24,17 +24,10 @@ interface Jadwal {
   route: any;
 }
 
-type BookedItem = {
-  lapangan: string;
-  waktu: string[];
-  booking_uid: string;
-};
-
 interface Lapangan {
   title: string;
   data: string[];
-  bookedTimes: string[];
-  booked?: BookedItem[];
+  bookedTimes: {booking_uid: string; waktu: string}[];
 }
 
 type DocData = {
@@ -70,7 +63,6 @@ const Jadwal = ({navigation}: Jadwal) => {
         )
         .filter(data => data.tanggalPemesanan.split('T')[0] === selectedDate);
       setBooked(bookedData);
-      console.log('Booked data: ', bookedData);
     } catch (error) {
       console.log('Error fetching data: ', error);
     } finally {
@@ -140,19 +132,16 @@ const Jadwal = ({navigation}: Jadwal) => {
       setLapangan(
         Array.from({length: dataLapangan.jumlahLapangan}, (_, i) => {
           const bookings = dataLapangan.booked.filter(
-            (b: {lapangan: number; booking_uid?: string; waktu: string[]}) =>
-              b.lapangan === i + 1,
+            (b: {lapangan: number}) => b.lapangan === i + 1,
           );
-          const bookedTimes = bookings.map(
-            (b: {waktu: string[]; booking_uid?: string}) => ({
-              booking_uid: b.booking_uid,
-              waktu: b.waktu,
-            }),
-          );
+          const bookedTimes = bookings.map((b: {id: any; waktu: any}) => ({
+            booking_uid: b.id,
+            waktu: JSON.parse(b.waktu),
+          }));
           return {
             title: `Lapangan ${i + 1}`,
             data: waktu,
-            bookedTimes: bookedTimes,
+            bookedTimes,
           };
         }),
       );
@@ -167,7 +156,7 @@ const Jadwal = ({navigation}: Jadwal) => {
     fetchBooked();
   };
 
-  const handleNavigateToDetailPemesan = (booking_uid: string) => () => {
+  const handleNavigateToDetailPemesanById = (booking_uid: string) => {
     navigation.navigate('DetailPemesan', {
       booking_uid,
     });
@@ -224,12 +213,9 @@ const Jadwal = ({navigation}: Jadwal) => {
                   const isBooked = lap.bookedTimes.some(bookedTime =>
                     bookedTime.waktu.includes(item),
                   );
-                  console.log('lap.booked:', lap.booked); // Add this line
-                  const booking_uid =
-                    lap.booked?.find((b: BookedItem) => {
-                      console.log('b:', b); // Add this line
-                      return b.waktu.includes(item);
-                    })?.booking_uid || '';
+                  const {booking_uid} = lap.bookedTimes.find(bookedTime =>
+                    bookedTime.waktu.includes(item),
+                  ) || {booking_uid: ''};
                   return (
                     <JadwalItem
                       key={innerIndex}
@@ -237,9 +223,7 @@ const Jadwal = ({navigation}: Jadwal) => {
                       isBooked={isBooked}
                       onPress={
                         isBooked
-                          ? () => {
-                              handleNavigateToDetailPemesan(booking_uid);
-                            }
+                          ? () => handleNavigateToDetailPemesanById(booking_uid)
                           : () => {
                               ToastAndroid.showWithGravityAndOffset(
                                 'Lapangan ini belum dipesan',
@@ -250,7 +234,6 @@ const Jadwal = ({navigation}: Jadwal) => {
                               );
                             }
                       }
-                      booking_uid={booking_uid}
                     />
                   );
                 })}
