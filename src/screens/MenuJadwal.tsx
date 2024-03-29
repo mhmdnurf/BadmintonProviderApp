@@ -6,8 +6,8 @@ import {
   View,
   Platform,
   Pressable,
-  ToastAndroid,
   RefreshControl,
+  ToastAndroid,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FlatContainer from '../components/FlatContainer';
@@ -17,24 +17,93 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BottomSpace from '../components/BottomSpace';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {useIsFocused} from '@react-navigation/native';
 
 interface Jadwal {
   navigation: any;
   route: any;
 }
 
+type BookedItem = {
+  lapangan: string;
+  waktu: string[];
+  booking_uid: string;
+};
+
 interface Lapangan {
   title: string;
   data: string[];
   bookedTimes: string[];
+  booked?: BookedItem[];
 }
 
+type DocData = {
+  id: string;
+  tanggalPemesanan: string;
+};
+
 const Jadwal = ({navigation}: Jadwal) => {
+  const isFocused = useIsFocused();
   const [lapangan, setLapangan] = React.useState<Lapangan[]>([]);
   const [date, setDate] = React.useState(new Date());
   const [show, setShow] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const [dataLapangan, setDataLapangan] = React.useState({} as any);
+  const [booked, setBooked] = React.useState([] as any);
+
+  const fetchBooked = React.useCallback(async () => {
+    setRefreshing(true);
+    const user = auth().currentUser;
+    try {
+      const selectedDate = date.toISOString().split('T')[0];
+      const query = await firestore()
+        .collection('booking')
+        .where('gor_uid', '==', user?.uid)
+        .where('status', '!=', 'expired')
+        .get();
+      const bookedData = query.docs
+        .map(
+          (doc): DocData => ({
+            ...(doc.data() as DocData),
+            id: doc.id,
+          }),
+        )
+        .filter(data => data.tanggalPemesanan.split('T')[0] === selectedDate);
+      setBooked(bookedData);
+      console.log('Booked data: ', bookedData);
+    } catch (error) {
+      console.log('Error fetching data: ', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [date]);
+
+  const fetchJadwal = React.useCallback(async () => {
+    const user = auth().currentUser;
+    try {
+      setRefreshing(true);
+      const query = await firestore().collection('gor').doc(user?.uid).get();
+      const lapanganData = query.data();
+      setDataLapangan({
+        id: user?.uid,
+        jumlahLapangan: lapanganData?.jumlahLapangan,
+        namaGOR: lapanganData?.namaGOR,
+        waktuBuka: `${lapanganData?.waktuBuka} - ${lapanganData?.waktuTutup}`,
+        hargaLapangan: lapanganData?.hargaLapangan,
+        booked: booked.map(
+          (item: {lapangan: string; waktu: Array<string>; id: string}) => ({
+            lapangan: parseInt(item.lapangan, 10),
+            waktu: JSON.stringify(item.waktu),
+            id: item.id,
+          }),
+        ),
+      });
+    } catch (error) {
+      console.log('Error fetching data: ', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [booked]);
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -46,27 +115,17 @@ const Jadwal = ({navigation}: Jadwal) => {
     setShow(true);
   };
 
-  const fetchJadwal = React.useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const user = auth().currentUser;
-      const query = await firestore().collection('gor').doc(user?.uid).get();
-      const lapanganData = query.data();
-      setDataLapangan({
-        jumlahLapangan: lapanganData?.jumlahLapangan,
-        waktuBuka: `${lapanganData?.waktuBuka} - ${lapanganData?.waktuTutup}`,
-        booked: [{}],
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setRefreshing(false);
+  React.useEffect(() => {
+    if (isFocused) {
+      fetchBooked();
     }
-  }, []);
+  }, [fetchBooked, isFocused]);
 
   React.useEffect(() => {
-    fetchJadwal();
-  }, [fetchJadwal]);
+    if (isFocused) {
+      fetchJadwal();
+    }
+  }, [fetchJadwal, isFocused]);
 
   React.useEffect(() => {
     if (dataLapangan?.waktuBuka) {
@@ -80,13 +139,20 @@ const Jadwal = ({navigation}: Jadwal) => {
       });
       setLapangan(
         Array.from({length: dataLapangan.jumlahLapangan}, (_, i) => {
-          const booking = dataLapangan.booked.find(
-            (b: {lapangan: number}) => b.lapangan === i + 1,
+          const bookings = dataLapangan.booked.filter(
+            (b: {lapangan: number; booking_uid?: string; waktu: string[]}) =>
+              b.lapangan === i + 1,
+          );
+          const bookedTimes = bookings.map(
+            (b: {waktu: string[]; booking_uid?: string}) => ({
+              booking_uid: b.booking_uid,
+              waktu: b.waktu,
+            }),
           );
           return {
             title: `Lapangan ${i + 1}`,
             data: waktu,
-            bookedTimes: booking ? booking.waktu : [],
+            bookedTimes: bookedTimes,
           };
         }),
       );
@@ -95,15 +161,15 @@ const Jadwal = ({navigation}: Jadwal) => {
     }
   }, [dataLapangan]);
 
-  const handleNavigateToPemesanan = (time: string) => () => {
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchJadwal();
+    fetchBooked();
+  };
+
+  const handleNavigateToDetailPemesan = (booking_uid: string) => () => {
     navigation.navigate('DetailPemesan', {
-      waktuBooking: time,
-      tanggalPemesanan: date.toLocaleDateString('id-ID', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }),
+      booking_uid,
     });
   };
 
@@ -148,34 +214,50 @@ const Jadwal = ({navigation}: Jadwal) => {
           style={styles.container}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={fetchJadwal} />
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }>
           {lapangan.map((lap: Lapangan, index: number) => (
             <View key={index}>
               <Text style={styles.titleContainer}>{lap.title}</Text>
               <View style={styles.itemContainer}>
-                {lap.data.map((item: string, innerIndex: number) => (
-                  <JadwalItem
-                    key={innerIndex}
-                    title={item}
-                    isBooked={lap.bookedTimes.includes(item)}
-                    onPress={
-                      lap.bookedTimes.includes(item)
-                        ? handleNavigateToPemesanan(item)
-                        : () => {
-                            ToastAndroid.showWithGravity(
-                              'Lapangan belum dipesan',
-                              ToastAndroid.SHORT,
-                              ToastAndroid.CENTER,
-                            );
-                          }
-                    }
-                  />
-                ))}
+                {lap.data.map((item: string, innerIndex: number) => {
+                  const isBooked = lap.bookedTimes.some(bookedTime =>
+                    bookedTime.waktu.includes(item),
+                  );
+                  console.log('lap.booked:', lap.booked); // Add this line
+                  const booking_uid =
+                    lap.booked?.find((b: BookedItem) => {
+                      console.log('b:', b); // Add this line
+                      return b.waktu.includes(item);
+                    })?.booking_uid || '';
+                  return (
+                    <JadwalItem
+                      key={innerIndex}
+                      title={item}
+                      isBooked={isBooked}
+                      onPress={
+                        isBooked
+                          ? () => {
+                              handleNavigateToDetailPemesan(booking_uid);
+                            }
+                          : () => {
+                              ToastAndroid.showWithGravityAndOffset(
+                                'Lapangan ini belum dipesan',
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM,
+                                25,
+                                50,
+                              );
+                            }
+                      }
+                      booking_uid={booking_uid}
+                    />
+                  );
+                })}
               </View>
             </View>
           ))}
-          <BottomSpace marginBottom={150} />
+          <BottomSpace marginBottom={40} />
         </ScrollView>
       </FlatContainer>
     </>
@@ -186,14 +268,13 @@ export default Jadwal;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
+    marginTop: 20,
     marginHorizontal: 20,
   },
   titleContainer: {
     fontFamily: 'Poppins SemiBold',
     fontSize: 20,
     marginBottom: 10,
-    color: '#41444B',
   },
   itemContainer: {
     flexDirection: 'row',
@@ -201,16 +282,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dateContainer: {marginHorizontal: 20, marginTop: 40},
-  dateTitle: {
-    fontFamily: 'Poppins SemiBold',
-    fontSize: 20,
-    color: '#41444B',
-  },
+  dateTitle: {fontFamily: 'Poppins SemiBold', fontSize: 20, marginBottom: 10},
   btnPicker: {
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 10,
-    marginTop: 5,
+    marginVertical: 10,
     width: '100%',
     borderColor: '#E5E5E5',
     borderWidth: 3,
@@ -218,7 +295,7 @@ const styles = StyleSheet.create({
   btnLabelContainer: {display: 'flex', flexDirection: 'row'},
   icon: {alignSelf: 'center'},
   label: {
-    color: '#41444B',
+    color: '#6F7789',
     fontSize: 18,
     fontFamily: 'Poppins Regular',
     alignSelf: 'center',
