@@ -14,6 +14,7 @@ const DetailPemesan = ({route}: DetailPemesan) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [dataBooking, setDataBooking] = React.useState<any>({});
   const [dataUser, setDataUser] = React.useState<any>({});
+  const [dataPayment, setDataPayment] = React.useState<any>({});
   const fetchBooked = React.useCallback(async () => {
     try {
       const query = await firestore()
@@ -40,6 +41,18 @@ const DetailPemesan = ({route}: DetailPemesan) => {
     }
   }, [dataBooking.user_uid]);
 
+  const fetchPayment = React.useCallback(async () => {
+    try {
+      const query = await firestore()
+        .collection('payment')
+        .doc(dataBooking.booking_uid)
+        .get();
+      setDataPayment(query.data());
+    } catch (error) {
+      console.log('Error fetching data: ', error);
+    }
+  }, [dataBooking.booking_uid]);
+
   React.useEffect(() => {
     fetchBooked();
   }, [fetchBooked]);
@@ -49,6 +62,10 @@ const DetailPemesan = ({route}: DetailPemesan) => {
       fetchUser();
     }
   }, [dataBooking.user_uid, fetchUser]);
+
+  React.useEffect(() => {
+    fetchPayment();
+  }, [fetchPayment]);
   return (
     <>
       <RootContainer backgroundColor="white">
@@ -58,7 +75,11 @@ const DetailPemesan = ({route}: DetailPemesan) => {
         ) : (
           <>
             <Header title={`Lapangan ${dataBooking.lapangan}`} />
-            <PemesanField dataBooking={dataBooking} dataUser={dataUser} />
+            <PemesanField
+              dataBooking={dataBooking}
+              dataUser={dataUser}
+              dataPayment={dataPayment}
+            />
           </>
         )}
       </RootContainer>
