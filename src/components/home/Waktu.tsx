@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     color: 'white',
     textAlign: 'center',
   },

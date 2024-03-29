@@ -18,16 +18,24 @@ interface DataUser {
 
 interface DataPayment {
   buktiPembayaran: string;
+  status: string;
 }
 
 interface PemesananField {
   dataBooking: DataBooking;
   dataUser: DataUser;
   dataPayment: DataPayment;
+  onConfirm: () => void;
+  onTolak: () => void;
 }
 
-const PemesanField = ({dataBooking, dataUser, dataPayment}: PemesananField) => {
-  console.log(dataPayment);
+const PemesanField = ({
+  dataBooking,
+  dataUser,
+  dataPayment,
+  onConfirm,
+  onTolak,
+}: PemesananField) => {
   return (
     <>
       <View style={styles.container}>
@@ -55,14 +63,21 @@ const PemesanField = ({dataBooking, dataUser, dataPayment}: PemesananField) => {
           placeholder="Jam"
           value={`${dataBooking.waktuBooking} - ${dataBooking.waktuAkhir}`}
         />
+        <Text style={styles.label}>Status</Text>
+        <InputField placeholder="Status" value={dataPayment?.status} />
         <Pressable
           style={styles.btnBukti}
           onPress={() => InAppBrowser.open(dataPayment?.buktiPembayaran)}>
           <Text style={styles.btnText}>Bukti Pembayaran</Text>
         </Pressable>
-        <Pressable style={styles.btnHapus} onPress={() => console.log('ok')}>
-          <Text style={styles.btnText}>Hapus</Text>
-        </Pressable>
+        <View style={styles.btnRootContainer}>
+          <Pressable style={styles.btnConfirm} onPress={onConfirm}>
+            <Text style={styles.btnText}>Konfirmasi</Text>
+          </Pressable>
+          <Pressable style={styles.btnTolak} onPress={onTolak}>
+            <Text style={styles.btnText}>Tolak</Text>
+          </Pressable>
+        </View>
         <BottomSpace marginBottom={40} />
       </View>
     </>
@@ -80,15 +95,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  btnHapus: {
+  btnTolak: {
     backgroundColor: '#FD4949',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 20,
+    width: '48%',
+  },
+  btnConfirm: {
+    backgroundColor: '#AAC8A7',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+    width: '48%',
   },
   btnBukti: {
-    backgroundColor: '#AAC8A7',
+    backgroundColor: '#9BB0C1',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -98,5 +122,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  btnRootContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

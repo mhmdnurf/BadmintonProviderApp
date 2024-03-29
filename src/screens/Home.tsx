@@ -25,6 +25,8 @@ const Home = ({navigation}: Home) => {
   const [catatan, setCatatan] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [refreshing, setRefreshing] = React.useState(false);
+  const [tagihan, setTagihan] = React.useState<any>({});
+  const [pendapatan, setPendapatan] = React.useState<any>({});
   const user = auth().currentUser;
   const fetchData = React.useCallback(async () => {
     setRefreshing(true);
@@ -45,11 +47,47 @@ const Home = ({navigation}: Home) => {
     setRefreshing(false);
   }, [user]);
 
+  const fetchTagihan = React.useCallback(async () => {
+    const tagihanDoc = await firestore()
+      .collection('komisi')
+      .doc(user?.uid)
+      .collection('March2024')
+      .doc(user?.uid)
+      .get();
+
+    if (tagihanDoc.exists) {
+      console.log('Document data:', tagihanDoc.data());
+      setTagihan(tagihanDoc.data());
+    } else {
+      console.log('No such document!');
+    }
+    const tagihanData = tagihanDoc.data();
+    console.log(tagihanData);
+  }, [user]);
+
+  const fetchPendapatan = React.useCallback(async () => {
+    const pendapatanDoc = await firestore()
+      .collection('pendapatan')
+      .doc(user?.uid)
+      .collection('March2024')
+      .doc(user?.uid)
+      .get();
+
+    if (pendapatanDoc.exists) {
+      console.log('Document data:', pendapatanDoc.data());
+      setPendapatan(pendapatanDoc.data());
+    } else {
+      console.log('No such document!');
+    }
+  }, [user]);
+
   React.useEffect(() => {
     if (isFocused) {
       fetchData();
+      fetchTagihan();
+      fetchPendapatan();
     }
-  }, [fetchData, isFocused]);
+  }, [fetchData, isFocused, fetchTagihan, fetchPendapatan]);
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'white'} />
@@ -68,8 +106,8 @@ const Home = ({navigation}: Home) => {
           />
           <ContentHeader title="Overview" />
           <Navbar navigation={navigation} />
-          <InfoPendapatan pendapatan={1000000} />
-          <InfoTagihan tagihan={500000} />
+          <InfoPendapatan pendapatan={pendapatan.jumlahPendapatan} />
+          <InfoTagihan tagihan={tagihan.jumlahKomisi} />
         </HeaderContainer>
         <BottomSpace marginBottom={100} />
       </RootContainer>

@@ -3,13 +3,14 @@ import Header from '../components/Header';
 import RootContainer from '../components/RootContainer';
 import PemesanField from '../components/detail_pemesan/PemesanField';
 import firestore from '@react-native-firebase/firestore';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Alert} from 'react-native';
 
 interface DetailPemesan {
   route: any;
+  navigation: any;
 }
 
-const DetailPemesan = ({route}: DetailPemesan) => {
+const DetailPemesan = ({route, navigation}: DetailPemesan) => {
   const {booking_uid} = route.params;
   const [isLoading, setIsLoading] = React.useState(true);
   const [dataBooking, setDataBooking] = React.useState<any>({});
@@ -66,6 +67,157 @@ const DetailPemesan = ({route}: DetailPemesan) => {
   React.useEffect(() => {
     fetchPayment();
   }, [fetchPayment]);
+
+  const handleConfirmRequest = async () => {
+    setIsLoading(true);
+    try {
+      const id = dataBooking.booking_uid;
+      await firestore().collection('booking').doc(id).update({
+        status: 'Selesai',
+      });
+      await firestore().collection('payment').doc(id).update({
+        status: 'Selesai',
+      });
+
+      const date = new Date();
+      const monthYear =
+        date.toLocaleString('default', {month: 'long'}) +
+        date.getFullYear().toString();
+      const komisiRef = firestore()
+        .collection('komisi')
+        .doc(dataBooking.gor_uid)
+        .collection(monthYear)
+        .doc(dataBooking.gor_uid);
+
+      firestore()
+        .runTransaction(async transaction => {
+          const doc = await transaction.get(komisiRef);
+
+          if (doc.exists) {
+            transaction.update(komisiRef, {
+              jumlahKomisi: firestore.FieldValue.increment(2500),
+            });
+          } else {
+            transaction.set(komisiRef, {
+              gor_uid: dataBooking.gor_uid,
+              createdAt: firestore.FieldValue.serverTimestamp(),
+              jumlahKomisi: 2500,
+            });
+          }
+        })
+        .catch(error => {
+          console.log('Transaction failed for komisi: ', error);
+        });
+
+      const pendapatanRef = firestore()
+        .collection('pendapatan')
+        .doc(dataBooking.gor_uid)
+        .collection(monthYear)
+        .doc(dataBooking.gor_uid);
+
+      firestore()
+        .runTransaction(async transaction => {
+          const doc = await transaction.get(pendapatanRef);
+
+          if (doc.exists) {
+            transaction.update(pendapatanRef, {
+              jumlahPendapatan: firestore.FieldValue.increment(
+                dataBooking.harga,
+              ),
+            });
+          } else {
+            transaction.set(pendapatanRef, {
+              gor_uid: dataBooking.gor_uid,
+              createdAt: firestore.FieldValue.serverTimestamp(),
+              jumlahPendapatan: dataBooking.harga,
+            });
+          }
+        })
+        .catch(error => {
+          console.log('Transaction failed for pendapatan: ', error);
+        });
+      console.log('Data berhasil diupdate', {
+        status: 'Terverifikasi',
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+      navigation.navigate('Home');
+    }
+  };
+
+  const handleTolakRequest = async () => {
+    setIsLoading(true);
+    try {
+      const id = dataBooking.booking_uid;
+      await firestore()
+        .collection('booking')
+        .doc(id)
+        .update({
+          status: 'Pending',
+          expiredAt: firestore.Timestamp.fromDate(
+            new Date(Date.now() + 30 * 60 * 1000),
+          ),
+        });
+
+      await firestore().collection('payment').doc(id).update({
+        status: 'Ditolak',
+      });
+
+      console.log('Data berhasil diupdate', {
+        status: 'Ditolak',
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+      navigation.navigate('Home');
+    }
+  };
+
+  const handleConfirm = async () => {
+    try {
+      Alert.alert(
+        'Data akan diverifikasi!',
+        'Apakah anda yakin untuk setujui?',
+        [
+          {
+            text: 'Confirm',
+            onPress: handleConfirmRequest,
+          },
+          {
+            text: 'Batal',
+            style: 'cancel',
+          },
+        ],
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleTolak = async () => {
+    try {
+      Alert.alert(
+        'Data akan diverifikasi!',
+        'Apakah anda yakin untuk menolak?',
+        [
+          {
+            text: 'Confirm',
+            onPress: handleTolakRequest,
+          },
+          {
+            text: 'Batal',
+            onPress: () => console.log('Batal'),
+            style: 'cancel',
+          },
+        ],
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <RootContainer backgroundColor="white">
@@ -79,6 +231,8 @@ const DetailPemesan = ({route}: DetailPemesan) => {
               dataBooking={dataBooking}
               dataUser={dataUser}
               dataPayment={dataPayment}
+              onConfirm={handleConfirm}
+              onTolak={handleTolak}
             />
           </>
         )}

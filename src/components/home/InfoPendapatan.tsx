@@ -22,7 +22,7 @@ const InfoPendapatan = ({pendapatan}: InfoPendapatan) => {
             style={[
               styles.subTitle,
               styles.number,
-            ]}>{`Rp. ${pendapatan.toLocaleString('id-ID')}`}</Text>
+            ]}>{`Rp. ${pendapatan?.toLocaleString('id-ID')}`}</Text>
         </View>
       </View>
     </>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     color: '#41444B',
   },
   subTitleContainer: {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     color: 'white',
     marginTop: 10,
   },
@@ -67,6 +67,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
     fontSize: 36,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
   },
 });

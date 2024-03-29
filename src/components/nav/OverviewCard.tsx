@@ -56,13 +56,14 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#41444B',
-    fontWeight: '600',
-    fontSize: 20,
+    fontFamily: 'Poppins SemiBold',
+    fontSize: 18,
   },
   subTitle: {
     color: '#6F7789',
     fontSize: 18,
     marginVertical: 5,
+    fontFamily: 'Poppins SemiBold',
   },
   btnContainer: {
     flex: 1,
