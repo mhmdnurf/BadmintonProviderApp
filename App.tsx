@@ -18,6 +18,7 @@ import PaketMember from './src/screens/PaketMember';
 import DetailPemesan from './src/screens/DetailPemesan';
 import Rekapitulasi from './src/screens/Rekapitulasi';
 import EditProfile from './src/screens/EditProfile';
+import VerifikasiMember from './src/screens/VerifikasiMember';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,6 +58,16 @@ const MainTabs = () => {
           options={{
             tabBarIcon: ({color, size}) => (
               <Icon name="calendar-clock-outline" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="VerifikasiMember"
+          component={VerifikasiMember}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <Icon name="account-star-outline" color={color} size={size} />
             ),
             headerShown: false,
           }}
