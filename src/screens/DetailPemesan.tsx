@@ -86,8 +86,8 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
       const komisiRef = firestore()
         .collection('komisi')
         .doc(dataBooking.gor_uid)
-        .collection(monthYear)
-        .doc(dataBooking.gor_uid);
+        .collection('periode')
+        .doc(monthYear);
 
       firestore()
         .runTransaction(async transaction => {
@@ -112,8 +112,8 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
       const pendapatanRef = firestore()
         .collection('pendapatan')
         .doc(dataBooking.gor_uid)
-        .collection(monthYear)
-        .doc(dataBooking.gor_uid);
+        .collection('periode')
+        .doc(monthYear);
 
       firestore()
         .runTransaction(async transaction => {

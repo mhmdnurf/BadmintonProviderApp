@@ -48,11 +48,15 @@ const Home = ({navigation}: Home) => {
   }, [user]);
 
   const fetchTagihan = React.useCallback(async () => {
+    const date = new Date();
+    const monthYear =
+      date.toLocaleString('default', {month: 'long'}) +
+      date.getFullYear().toString();
     const tagihanDoc = await firestore()
       .collection('komisi')
       .doc(user?.uid)
-      .collection('March2024')
-      .doc(user?.uid)
+      .collection('periode')
+      .doc(monthYear)
       .get();
 
     if (tagihanDoc.exists) {
@@ -66,11 +70,15 @@ const Home = ({navigation}: Home) => {
   }, [user]);
 
   const fetchPendapatan = React.useCallback(async () => {
+    const date = new Date();
+    const monthYear =
+      date.toLocaleString('default', {month: 'long'}) +
+      date.getFullYear().toString();
     const pendapatanDoc = await firestore()
       .collection('pendapatan')
       .doc(user?.uid)
-      .collection('March2024')
-      .doc(user?.uid)
+      .collection('periode')
+      .doc(monthYear)
       .get();
 
     if (pendapatanDoc.exists) {

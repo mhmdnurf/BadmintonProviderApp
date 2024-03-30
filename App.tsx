@@ -19,6 +19,7 @@ import DetailPemesan from './src/screens/DetailPemesan';
 import Rekapitulasi from './src/screens/Rekapitulasi';
 import EditProfile from './src/screens/EditProfile';
 import VerifikasiMember from './src/screens/VerifikasiMember';
+import DetailVerifikasiMember from './src/screens/DetailVerifikasiMember';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -160,6 +161,11 @@ export default function App() {
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
+          options={{title: '', headerShown: true, headerTintColor: '#AAC8A7'}}
+        />
+        <Stack.Screen
+          name="DetailVerifikasiMember"
+          component={DetailVerifikasiMember}
           options={{title: '', headerShown: true, headerTintColor: '#AAC8A7'}}
         />
       </Stack.Navigator>
