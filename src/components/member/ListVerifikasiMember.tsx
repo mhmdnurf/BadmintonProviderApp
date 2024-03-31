@@ -6,7 +6,7 @@ import {FlatList} from 'react-native-gesture-handler';
 interface ListVerifikasiData {
   id: string;
   namaLengkap: string;
-  hargaMember: string;
+  jumlahPembayaran: string;
   masaAktif: string;
   status: string;
 }
@@ -31,17 +31,17 @@ const ListVerifikasiMember = ({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        renderItem={({item}) => (
+        renderItem={({item, index}) => (
           <Pressable onPress={onPress}>
             <ListCard
+              key={index}
               fullName={item.namaLengkap}
               status={item.status}
               masaAktif={item.masaAktif}
-              backgroundColor={'#FF8080'}
+              backgroundColor={item.status !== 'Aktif' ? '#FF8080' : '#AAC8A7'}
             />
           </Pressable>
         )}
-        keyExtractor={item => item.id}
       />
     </>
   );

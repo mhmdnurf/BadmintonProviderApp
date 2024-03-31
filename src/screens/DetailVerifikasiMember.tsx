@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import RootContainer from '../components/RootContainer';
 import {ActivityIndicator, Alert} from 'react-native';
 import VerifikasiField from '../components/member/VerifikasiField';
+import firestore from '@react-native-firebase/firestore';
 
 interface DetailVerifikasiMember {
   route: any;
@@ -13,12 +14,36 @@ const DetailVerifikasiMember = ({
   route,
   navigation,
 }: DetailVerifikasiMember) => {
-  const {booking_uid} = route.params;
-  const [isLoading, setIsLoading] = React.useState(true);
+  const {data} = route.params;
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleConfirmRequest = async () => {};
+  const handleConfirmRequest = async () => {
+    setIsLoading(true);
+    try {
+      await firestore().collection('member').doc(data[0].id).update({
+        status: 'Aktif',
+      });
+    } catch (error) {
+      console.log('Error confirming member: ', error);
+    } finally {
+      setIsLoading(false);
+      navigation.navigate('Home');
+    }
+  };
 
-  const handleTolakRequest = async () => {};
+  const handleTolakRequest = async () => {
+    setIsLoading(true);
+    try {
+      await firestore().collection('member').doc(data[0].id).update({
+        status: 'Tidak Aktif',
+      });
+    } catch (error) {
+      console.log('Error rejecting member: ', error);
+    } finally {
+      setIsLoading(false);
+      navigation.navigate('Home');
+    }
+  };
 
   const handleConfirm = async () => {
     try {
@@ -66,13 +91,14 @@ const DetailVerifikasiMember = ({
     <>
       <RootContainer backgroundColor="white">
         <Header title="Detail Member" />
-        {/* {isLoading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : ( */}
         <>
-          <VerifikasiField onConfirm={handleConfirm} onTolak={handleTolak} />
+          {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+          <VerifikasiField
+            onConfirm={handleConfirm}
+            onTolak={handleTolak}
+            data={data}
+          />
         </>
-        {/* )} */}
       </RootContainer>
     </>
   );

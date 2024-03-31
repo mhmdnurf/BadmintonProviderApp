@@ -4,30 +4,60 @@ import InputField from '../InputField';
 import BottomSpace from '../BottomSpace';
 import InAppBrowser from 'react-native-inappbrowser-reborn';
 
+interface Data {
+  namaLengkap: string;
+  nomor: string;
+  jumlahPembayaran: string;
+  masaAktif: string;
+  status: string;
+  buktiPembayaran: string;
+}
+
 interface VerifikasiField {
   onConfirm: () => void;
   onTolak: () => void;
+  data: Data[];
 }
 
-const VerifikasiField = ({onConfirm, onTolak}: VerifikasiField) => {
+const VerifikasiField = ({onConfirm, onTolak, data}: VerifikasiField) => {
   return (
     <>
       <View style={styles.container}>
         <Text style={styles.label}>Nama Lengkap</Text>
-        <InputField placeholder="Nama Lengkap" value="Pedry" />
+        <InputField
+          placeholder="Nama Lengkap"
+          value={data[0].namaLengkap}
+          editable={false}
+        />
         <Text style={styles.label}>Nomor Telepon</Text>
-        <InputField placeholder="Nomor Telepon" value="083801310191" />
+        <InputField
+          placeholder="Nomor Telepon"
+          value={data[0].nomor}
+          editable={false}
+        />
         <Text style={styles.label}>Harga Member</Text>
-        <InputField placeholder="Harga Member" value="Rp. 100.000" />
+        <InputField
+          placeholder="Harga Member"
+          value={`Rp.${data[0].jumlahPembayaran}`}
+          editable={false}
+        />
         <Text style={styles.label}>Masa Aktif</Text>
-        <InputField placeholder="Masa Aktif" value="Maret 2024" />
+        <InputField
+          placeholder="Masa Aktif"
+          value={data[0].masaAktif}
+          editable={false}
+        />
         <Text style={styles.label}>Status</Text>
-        <InputField placeholder="Status" value="Menunggu Aktivasi" />
-        {/* <Pressable
+        <InputField
+          placeholder="Status"
+          value={data[0].status}
+          editable={false}
+        />
+        <Pressable
           style={styles.btnBukti}
-          onPress={() => InAppBrowser.open(dataPayment?.buktiPembayaran)}>
+          onPress={() => InAppBrowser.open(data[0].buktiPembayaran)}>
           <Text style={styles.btnText}>Bukti Pembayaran</Text>
-        </Pressable> */}
+        </Pressable>
         <View style={styles.btnRootContainer}>
           <Pressable style={styles.btnConfirm} onPress={onConfirm}>
             <Text style={styles.btnText}>Konfirmasi</Text>
