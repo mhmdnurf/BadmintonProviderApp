@@ -41,6 +41,8 @@ const Register = ({navigation}: Register) => {
   const [nomor, setNomor] = React.useState('');
   const [alamatGOR, setAlamatGOR] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [selectedBank, setSelectedBank] = React.useState('');
+  const [nomorRekening, setNomorRekening] = React.useState('');
 
   const handleNavigateLogin = () => {
     navigation.navigate('Login');
@@ -161,6 +163,8 @@ const Register = ({navigation}: Register) => {
         alamatGOR: alamatGOR,
         fotoUser: fotoUserUrl,
         user_uid: user?.uid,
+        noRek: nomorRekening,
+        namaBank: selectedBank,
         role: 'provider',
       });
 
@@ -197,6 +201,10 @@ const Register = ({navigation}: Register) => {
             onJenisKelaminValueChange={itemValue =>
               setSelectedJenisKelamin(itemValue)
             }
+            selectedBankValue={selectedBank}
+            onBankValueChange={itemValue => setSelectedBank(itemValue)}
+            nomorRekeningValue={nomorRekening}
+            onChangeTextNomorRekening={setNomorRekening}
             alamatValue={alamatGOR}
             onChangeTextAlamatGOR={setAlamatGOR}
             nameValue={fullName}

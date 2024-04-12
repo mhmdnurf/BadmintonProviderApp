@@ -136,6 +136,29 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
         .catch(error => {
           console.log('Transaction failed for pendapatan: ', error);
         });
+
+      const totalKomisiRef = firestore()
+        .collection('totalKomisi')
+        .doc(monthYear);
+
+      firestore()
+        .runTransaction(async transaction => {
+          const doc = await transaction.get(totalKomisiRef);
+
+          if (doc.exists) {
+            transaction.update(totalKomisiRef, {
+              totalKomisi: firestore.FieldValue.increment(2500),
+            });
+          } else {
+            transaction.set(totalKomisiRef, {
+              createdAt: firestore.FieldValue.serverTimestamp(),
+              totalKomisi: 2500,
+            });
+          }
+        })
+        .catch(error => {
+          console.log('Transaction failed for pendapatan: ', error);
+        });
       console.log('Data berhasil diupdate', {
         status: 'Terverifikasi',
       });

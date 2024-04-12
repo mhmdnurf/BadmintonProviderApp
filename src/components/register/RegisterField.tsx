@@ -32,6 +32,10 @@ interface RegisterField {
   fotoUserGor?: string | undefined;
   alamatValue: string;
   onChangeTextAlamatGOR: (text: string) => void;
+  nomorRekeningValue: string;
+  onChangeTextNomorRekening: (text: string) => void;
+  selectedBankValue: string;
+  onBankValueChange: (itemValue: string, itemIndex: number) => void;
 }
 
 const RegisterField = ({
@@ -63,6 +67,10 @@ const RegisterField = ({
   fotoUserGor,
   alamatValue,
   onChangeTextAlamatGOR,
+  nomorRekeningValue,
+  onChangeTextNomorRekening,
+  selectedBankValue,
+  onBankValueChange,
 }: RegisterField) => {
   return (
     <>
@@ -173,6 +181,28 @@ const RegisterField = ({
         onChangeText={onChangeTextNomor}
         keyboardType="numeric"
       />
+      <InputField
+        placeholder="Nomor Rekening"
+        secureTextEntry={false}
+        value={nomorRekeningValue}
+        onChangeText={onChangeTextNomorRekening}
+        keyboardType="numeric"
+      />
+      <View style={styles.picker}>
+        <Picker
+          style={styles.pickerText}
+          selectedValue={selectedBankValue}
+          onValueChange={onBankValueChange}>
+          <Picker.Item label="Nama Bank" value="" />
+          <Picker.Item label="BCA" value="BCA" />
+          <Picker.Item label="BRI" value="BRI" />
+          <Picker.Item label="BNI" value="BNI" />
+          <Picker.Item label="Mandiri" value="Mandiri" />
+          <Picker.Item label="BSI" value="BSI" />
+          <Picker.Item label="BTN" value="BTN" />
+          <Picker.Item label="CIMB Niaga" value="CIMB Niaga" />
+        </Picker>
+      </View>
       <View style={styles.uploadContainer}>
         <InputField
           placeholder="Surat Izin Usaha (JPG/PDF)"

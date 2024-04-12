@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import Header from '../components/Header';
 import ListVerifikasiMember from '../components/member/ListVerifikasiMember';
 import firestore from '@react-native-firebase/firestore';
@@ -71,12 +71,20 @@ const VerifikasiMember = ({navigation}: VerifikasiMember) => {
     <>
       <View style={styles.container}>
         <Header title="Verifikasi Member" />
-        <ListVerifikasiMember
-          data={dataMember}
-          onPress={handleNavigate}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
+        {dataMember.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              Tidak ada member yang perlu diverifikasi
+            </Text>
+          </View>
+        ) : (
+          <ListVerifikasiMember
+            data={dataMember}
+            onPress={handleNavigate}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        )}
       </View>
     </>
   );
@@ -88,5 +96,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'black',
+    fontFamily: 'Poppins Regular',
   },
 });

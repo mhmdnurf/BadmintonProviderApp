@@ -114,8 +114,14 @@ const Home = ({navigation}: Home) => {
           />
           <ContentHeader title="Overview" />
           <Navbar navigation={navigation} />
-          <InfoPendapatan pendapatan={pendapatan.jumlahPendapatan} />
-          <InfoTagihan tagihan={tagihan.jumlahKomisi} />
+          <InfoPendapatan
+            pendapatan={
+              pendapatan.jumlahPendapatan ? pendapatan.jumlahPendapatan : 0
+            }
+          />
+          <InfoTagihan
+            tagihan={tagihan.jumlahKomisi ? tagihan.jumlahKomisi : 0}
+          />
         </HeaderContainer>
         <BottomSpace marginBottom={100} />
       </RootContainer>
