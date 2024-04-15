@@ -194,8 +194,6 @@ const Jadwal = ({navigation}: Jadwal) => {
               is24Hour={true}
               display="default"
               onChange={onChange}
-              maximumDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
-              minimumDate={new Date(Date.now())}
             />
           ) : null}
         </View>

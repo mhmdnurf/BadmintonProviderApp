@@ -19,6 +19,7 @@ interface DataUser {
 interface DataPayment {
   buktiPembayaran: string;
   status: string;
+  metodePembayaran: string;
 }
 
 interface PemesananField {
@@ -51,33 +52,61 @@ const PemesanField = ({
               day: 'numeric',
             },
           )}
+          editable={false}
         />
         <Text style={styles.label}>Nama Lengkap</Text>
-        <InputField placeholder="Nama Lengkap" value={dataUser.namaLengkap} />
+        <InputField
+          placeholder="Nama Lengkap"
+          value={dataUser.namaLengkap}
+          editable={false}
+        />
         <Text style={styles.label}>Nomor Telepon</Text>
-        <InputField placeholder="Nomor Telepon" value={dataUser.nomor} />
+        <InputField
+          placeholder="Nomor Telepon"
+          value={dataUser.nomor}
+          editable={false}
+        />
         <Text style={styles.label}>Durasi</Text>
-        <InputField placeholder="Durasi" value={dataBooking.lamaBermain} />
+        <InputField
+          placeholder="Durasi"
+          value={dataBooking.lamaBermain}
+          editable={false}
+        />
         <Text style={styles.label}>Jam</Text>
         <InputField
           placeholder="Jam"
           value={`${dataBooking.waktuBooking} - ${dataBooking.waktuAkhir}`}
+          editable={false}
+        />
+        <Text style={styles.label}>Metode Pembayaran</Text>
+        <InputField
+          placeholder="Metode Pembayaran"
+          value={dataPayment?.metodePembayaran}
+          editable={false}
         />
         <Text style={styles.label}>Status</Text>
-        <InputField placeholder="Status" value={dataPayment?.status} />
-        <Pressable
-          style={styles.btnBukti}
-          onPress={() => InAppBrowser.open(dataPayment?.buktiPembayaran)}>
-          <Text style={styles.btnText}>Bukti Pembayaran</Text>
-        </Pressable>
-        <View style={styles.btnRootContainer}>
-          <Pressable style={styles.btnConfirm} onPress={onConfirm}>
-            <Text style={styles.btnText}>Konfirmasi</Text>
-          </Pressable>
-          <Pressable style={styles.btnTolak} onPress={onTolak}>
-            <Text style={styles.btnText}>Tolak</Text>
-          </Pressable>
-        </View>
+        <InputField
+          placeholder="Status"
+          value={dataPayment?.status}
+          editable={false}
+        />
+        {dataPayment?.metodePembayaran !== 'member' ? (
+          <>
+            <Pressable
+              style={styles.btnBukti}
+              onPress={() => InAppBrowser.open(dataPayment?.buktiPembayaran)}>
+              <Text style={styles.btnText}>Bukti Pembayaran</Text>
+            </Pressable>
+            <View style={styles.btnRootContainer}>
+              <Pressable style={styles.btnConfirm} onPress={onConfirm}>
+                <Text style={styles.btnText}>Konfirmasi</Text>
+              </Pressable>
+              <Pressable style={styles.btnTolak} onPress={onTolak}>
+                <Text style={styles.btnText}>Tolak</Text>
+              </Pressable>
+            </View>
+          </>
+        ) : null}
         <BottomSpace marginBottom={40} />
       </View>
     </>

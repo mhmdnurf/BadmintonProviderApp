@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Header from '../components/Header';
 import RegisterField from '../components/register/RegisterField';
 import RegisterButton from '../components/register/RegisterButton';
@@ -112,6 +119,27 @@ const Register = ({navigation}: Register) => {
   };
 
   const handleSubmit = async () => {
+    if (
+      !email ||
+      !password ||
+      !fullName ||
+      !nik ||
+      !nomor ||
+      !alamatGOR ||
+      !fotoGor ||
+      !fotoUser ||
+      !suratIzin ||
+      !namaGor ||
+      !selectedWaktuBuka ||
+      !selectedWaktuTutup ||
+      !jumlahLapangan ||
+      !selectedJenisKelamin ||
+      !nomorRekening ||
+      !selectedBank
+    ) {
+      Alert.alert('Submit tidak dapat dilakukan', 'Semua field harus diisi');
+      return;
+    }
     setIsLoading(true);
     const userCredential = await auth().createUserWithEmailAndPassword(
       email,
@@ -243,6 +271,21 @@ const Register = ({navigation}: Register) => {
             onPress={handleNavigateLogin}
           />
           <BottomSpace marginBottom={40} />
+          <Modal
+            transparent={true}
+            animationType="none"
+            visible={isLoading}
+            onRequestClose={() => {}}>
+            <View style={styles.modalBackground}>
+              <View style={styles.activityIndicatorWrapper}>
+                <ActivityIndicator
+                  animating={isLoading}
+                  size="large"
+                  color="#AAC8A7"
+                />
+              </View>
+            </View>
+          </Modal>
         </View>
       </RootContainer>
     </>
@@ -266,5 +309,21 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginHorizontal: 20,
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    backgroundColor: '#00000040',
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: '#FFFFFF',
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
 });
