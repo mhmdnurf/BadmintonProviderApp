@@ -11,6 +11,7 @@ import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import {useIsFocused} from '@react-navigation/native';
+import TagihanButton from '../components/tagihan/TagihanButton';
 
 interface Profile {
   navigation: any;
@@ -63,7 +64,13 @@ const Profile = ({navigation}: Profile) => {
   };
 
   const handleNavigateToEditProfile = () => {
-    navigation.navigate('EditProfile', {userData});
+    navigation.navigate('EditProfile', {
+      data: userData,
+    });
+  };
+
+  const handleNavigateDaftarTagihan = () => {
+    navigation.navigate('DaftarTagihan');
   };
 
   React.useEffect(() => {
@@ -87,6 +94,7 @@ const Profile = ({navigation}: Profile) => {
           nomor={userData.nomor}
           status={userData.status}
         />
+        <TagihanButton onPress={handleNavigateDaftarTagihan} />
         <RiwayatButton onPress={handleNavigateRiwayat} />
         <LogoutButton onPress={handleLogout} />
         <BottomSpace marginBottom={100} />

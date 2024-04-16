@@ -7,10 +7,6 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 interface EditProfile {
-  fullName: string;
-  jenisKelamin: string;
-  email: string;
-  nomor: string;
   route: any;
   navigation: any;
 }
@@ -27,11 +23,9 @@ type DataGOR = {
 };
 
 const EditProfile = ({route, navigation}: EditProfile) => {
-  const {userData} = route.params;
-  const [namaLengkap, setNamaLengkap] = React.useState(
-    userData?.namaLengkap || '',
-  );
-  const [nomor, setNomor] = React.useState(userData?.nomor || '');
+  const {data} = route.params;
+  const [namaLengkap, setNamaLengkap] = React.useState(data?.namaLengkap || '');
+  const [nomor, setNomor] = React.useState(data?.nomor || '');
   const [suratIzin, setSuratIzin] = React.useState<DocumentPick>();
   const [fotoGOR, setFotoGOR] = React.useState<DocumentPick>();
   const [dataGOR, setDataGOR] = React.useState({} as DataGOR);
@@ -131,8 +125,8 @@ const EditProfile = ({route, navigation}: EditProfile) => {
         <Header title="Edit Profile" marginBottom={20} />
         <EditField
           fotoGOR={fotoGOR?.name}
-          namaLengkap={userData?.namaLengkap}
-          nomor={userData?.nomor}
+          namaLengkap={data?.namaLengkap}
+          nomor={data?.nomor}
           suratIzin={suratIzin?.name}
           onPressSuratIzin={handleUploadSuratIzin}
           onPressFotoGOR={handleUploadFotoGOR}

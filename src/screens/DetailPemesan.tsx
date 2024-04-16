@@ -148,11 +148,13 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
           if (doc.exists) {
             transaction.update(totalKomisiRef, {
               totalKomisi: firestore.FieldValue.increment(2500),
+              status: 'Belum Lunas',
             });
           } else {
             transaction.set(totalKomisiRef, {
               createdAt: firestore.FieldValue.serverTimestamp(),
               totalKomisi: 2500,
+              status: 'Belum Lunas',
             });
           }
         })

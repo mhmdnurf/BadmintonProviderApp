@@ -20,6 +20,8 @@ import Rekapitulasi from './src/screens/Rekapitulasi';
 import EditProfile from './src/screens/EditProfile';
 import VerifikasiMember from './src/screens/VerifikasiMember';
 import DetailVerifikasiMember from './src/screens/DetailVerifikasiMember';
+import DaftarTagihan from './src/screens/DaftarTagihan';
+import DetailTagihan from './src/screens/DetailTagihan';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -167,6 +169,24 @@ export default function App() {
           name="DetailVerifikasiMember"
           component={DetailVerifikasiMember}
           options={{title: '', headerShown: true, headerTintColor: '#AAC8A7'}}
+        />
+        <Stack.Screen
+          name="DaftarTagihan"
+          component={DaftarTagihan}
+          options={{
+            title: '',
+            headerShown: true,
+            headerTintColor: '#AAC8A7',
+          }}
+        />
+        <Stack.Screen
+          name="DetailTagihan"
+          component={DetailTagihan}
+          options={{
+            title: '',
+            headerShown: true,
+            headerTintColor: '#AAC8A7',
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

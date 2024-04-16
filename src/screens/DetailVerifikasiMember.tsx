@@ -20,9 +20,13 @@ const DetailVerifikasiMember = ({
   const handleConfirmRequest = async () => {
     setIsLoading(true);
     try {
-      await firestore().collection('member').doc(data[0].id).update({
-        status: 'Aktif',
-      });
+      await firestore()
+        .collection('member')
+        .doc(data[0].id)
+        .update({
+          status: 'Aktif',
+          kuota: firestore.FieldValue.increment(4),
+        });
     } catch (error) {
       console.log('Error confirming member: ', error);
     } finally {

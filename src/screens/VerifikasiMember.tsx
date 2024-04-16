@@ -35,17 +35,25 @@ const VerifikasiMember = ({navigation}: VerifikasiMember) => {
         .get();
 
       const data: Member[] = [];
-      query.forEach(documentSnapshot => {
-        data.push({
-          id: documentSnapshot.id,
-          namaLengkap: documentSnapshot.data().namaLengkap,
-          jumlahPembayaran: documentSnapshot.data().jumlahPembayaran,
-          masaAktif: documentSnapshot.data().masaAktif,
-          status: documentSnapshot.data().status,
-          nomor: documentSnapshot.data().nomor,
-          buktiPembayaran: documentSnapshot.data().buktiPembayaran,
-        });
-      });
+      for (let documentSnapshot of query.docs) {
+        const memberData = documentSnapshot.data();
+        const userData = await firestore()
+          .collection('users')
+          .doc(memberData.user_uid)
+          .get();
+
+        if (userData.exists) {
+          data.push({
+            id: documentSnapshot.id,
+            namaLengkap: userData.data()?.namaLengkap,
+            jumlahPembayaran: memberData.jumlahPembayaran,
+            masaAktif: memberData.masaAktif,
+            status: memberData.status,
+            nomor: userData.data()?.nomor,
+            buktiPembayaran: memberData.buktiPembayaran,
+          });
+        }
+      }
       setDataMember(data);
     } catch (error) {
       console.log('Error fetching member: ', error);
