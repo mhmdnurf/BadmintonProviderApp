@@ -22,6 +22,9 @@ import VerifikasiMember from './src/screens/VerifikasiMember';
 import DetailVerifikasiMember from './src/screens/DetailVerifikasiMember';
 import DaftarTagihan from './src/screens/DaftarTagihan';
 import DetailTagihan from './src/screens/DetailTagihan';
+import messaging from '@react-native-firebase/messaging';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -91,6 +94,28 @@ const MainTabs = () => {
 };
 
 export default function App() {
+  React.useEffect(() => {
+    messaging()
+      .getToken()
+      .then(async token => {
+        console.log(token);
+
+        const user = auth().currentUser;
+        if (user) {
+          const userDocRef = firestore().collection('users').doc(user.uid);
+          await userDocRef.update({registrationToken: token});
+          console.log('Registration token updated in Firestore');
+        } else {
+          console.log('No user is currently logged in');
+        }
+      })
+      .catch(error => {
+        console.log('Error getting device token:', error);
+      });
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
+  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator

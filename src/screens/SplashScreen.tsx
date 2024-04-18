@@ -53,13 +53,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     marginTop: 20,
     color: 'white',
   },
   subTitle: {
     fontSize: 16,
     color: 'white',
+    fontFamily: 'Poppins Regular',
   },
   subTitleContainer: {
     marginTop: 10,

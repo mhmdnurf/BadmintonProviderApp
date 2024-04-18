@@ -1,13 +1,55 @@
-import DateTimePickerAndroid from '@react-native-community/datetimepicker';
 import React from 'react';
+import DateTimePickerAndroid from '@react-native-community/datetimepicker';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const RekapField = () => {
   const [date, setDate] = React.useState(new Date());
   const [show, setShow] = React.useState(false);
   const [endDate, setEndDate] = React.useState(new Date());
   const [showEnd, setShowEnd] = React.useState(false);
+
+  const fetchDataPemesanan = React.useCallback(async () => {
+    try {
+      const user = auth().currentUser;
+      const query = await firestore()
+        .collection('booking')
+        .where('gor_uid', '==', user?.uid)
+        .get();
+
+      query.forEach(doc => {
+        console.log('Data', '=>', doc.data());
+      });
+    } catch (error) {
+      console.log('Error fetching data: ', error);
+    }
+  }, []);
+
+  const fetchDataPembayaran = React.useCallback(async () => {
+    try {
+      const user = auth().currentUser;
+      const query = await firestore()
+        .collection('payment')
+        .where('gor_uid', '==', user?.uid)
+        .get();
+
+      query.forEach(doc => {
+        console.log('Data', '=>', doc.data());
+      });
+    } catch (error) {
+      console.log('Error fetching data: ', error);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchDataPemesanan();
+  }, [fetchDataPemesanan]);
+
+  React.useEffect(() => {
+    fetchDataPembayaran();
+  }, [fetchDataPembayaran]);
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -59,8 +101,6 @@ const RekapField = () => {
             is24Hour={true}
             display="default"
             onChange={onChange}
-            maximumDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
-            minimumDate={new Date(Date.now())}
           />
         ) : null}
 
@@ -91,8 +131,6 @@ const RekapField = () => {
             is24Hour={true}
             display="default"
             onChange={onChangeEnd}
-            maximumDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
-            minimumDate={date}
           />
         ) : null}
         {/* Submit Button */}
