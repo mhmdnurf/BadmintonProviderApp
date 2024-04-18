@@ -25,6 +25,7 @@ import DetailTagihan from './src/screens/DetailTagihan';
 import messaging from '@react-native-firebase/messaging';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Notifikasi from './src/screens/Notifikasi';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,6 +75,16 @@ const MainTabs = () => {
           options={{
             tabBarIcon: ({color, size}) => (
               <Icon name="account-star-outline" color={color} size={size} />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="Notifikasi"
+          component={Notifikasi}
+          options={{
+            tabBarIcon: ({color, size}) => (
+              <Icon name="bell" color={color} size={size} />
             ),
             headerShown: false,
           }}
