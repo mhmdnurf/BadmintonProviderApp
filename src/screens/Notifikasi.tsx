@@ -19,6 +19,132 @@ const Notifikasi = () => {
       pesan: 'Pembayaran untuk lapangan 1 berhasil',
       status: 'failed',
     },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
+    {
+      user_uid: '1',
+      title: 'Pembayaran Gagal',
+      pesan: 'Pembayaran untuk lapangan 1 berhasil',
+      status: 'failed',
+    },
   ];
   return (
     <FlatContainer backgroundColor="white">
@@ -26,6 +152,7 @@ const Notifikasi = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Informasi Terkini</Text>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={data}
           renderItem={({item, index}) => (
             <NotifikasiCard
@@ -35,7 +162,7 @@ const Notifikasi = () => {
               pesan={item.pesan}
             />
           )}
-          ListFooterComponent={<BottomSpace marginBottom={100} />}
+          ListFooterComponent={<BottomSpace marginBottom={300} />}
         />
       </View>
     </FlatContainer>

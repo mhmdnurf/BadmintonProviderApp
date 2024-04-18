@@ -16,6 +16,19 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
   const [dataBooking, setDataBooking] = React.useState<any>({});
   const [dataUser, setDataUser] = React.useState<any>({});
   const [dataPayment, setDataPayment] = React.useState<any>({});
+  const [dataGOR, setDataGOR] = React.useState<any>({});
+
+  const fetchGOR = React.useCallback(async () => {
+    try {
+      const query = await firestore()
+        .collection('gor')
+        .doc(dataBooking.gor_uid)
+        .get();
+      setDataGOR(query.data());
+    } catch (error) {
+      console.log('Error fetching data: ', error);
+    }
+  }, [dataBooking.gor_uid]);
   const fetchBooked = React.useCallback(async () => {
     try {
       const query = await firestore()
@@ -67,6 +80,12 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
   React.useEffect(() => {
     fetchPayment();
   }, [fetchPayment]);
+
+  React.useEffect(() => {
+    if (dataBooking.gor_uid) {
+      fetchGOR();
+    }
+  }, [dataBooking.gor_uid, fetchGOR]);
 
   const handleConfirmRequest = async () => {
     setIsLoading(true);
@@ -164,6 +183,15 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
       console.log('Data berhasil diupdate', {
         status: 'Terverifikasi',
       });
+
+      const notifikasiQuery = firestore().collection('notifikasi');
+      await notifikasiQuery.add({
+        user_uid: dataBooking.user_uid,
+        title: 'Pembayaran Berhasil',
+        status: 'success',
+        message: `Pemesanan anda di lapangan ${dataBooking.lapangan} - ${dataGOR.namaGOR} telah disetujui oleh Pemilik GOR. Silahkan cek status pemesanan anda di aplikasi.`,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -192,6 +220,14 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
 
       console.log('Data berhasil diupdate', {
         status: 'Ditolak',
+      });
+      const notifikasiQuery = firestore().collection('notifikasi');
+      await notifikasiQuery.add({
+        user_uid: dataBooking.user_uid,
+        title: 'Pembayaran Gagal',
+        status: 'failed',
+        message: `Pemesanan anda di lapangan ${dataBooking.lapangan} - ${dataGOR.namaGOR} telah ditolak oleh Pemilik GOR. Jika anda yakin ini kesalahan, silahkan hubungi nomor Pemilik GOR di aplikasi.`,
+        createdAt: firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
       console.log(error);
