@@ -97,14 +97,19 @@ const PemesanField = ({
               onPress={() => InAppBrowser.open(dataPayment?.buktiPembayaran)}>
               <Text style={styles.btnText}>Bukti Pembayaran</Text>
             </Pressable>
-            <View style={styles.btnRootContainer}>
-              <Pressable style={styles.btnConfirm} onPress={onConfirm}>
-                <Text style={styles.btnText}>Konfirmasi</Text>
-              </Pressable>
-              <Pressable style={styles.btnTolak} onPress={onTolak}>
-                <Text style={styles.btnText}>Tolak</Text>
-              </Pressable>
-            </View>
+            {dataPayment?.status !== 'Selesai' &&
+            dataPayment?.status !== 'Ditolak' ? (
+              <>
+                <View style={styles.btnRootContainer}>
+                  <Pressable style={styles.btnConfirm} onPress={onConfirm}>
+                    <Text style={styles.btnText}>Konfirmasi</Text>
+                  </Pressable>
+                  <Pressable style={styles.btnTolak} onPress={onTolak}>
+                    <Text style={styles.btnText}>Tolak</Text>
+                  </Pressable>
+                </View>
+              </>
+            ) : null}
           </>
         ) : null}
         <BottomSpace marginBottom={40} />

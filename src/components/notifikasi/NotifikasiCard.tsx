@@ -16,8 +16,10 @@ const NotifikasiCard = ({status, title, pesan}: NotifikasiCard) => {
         <View style={styles.icon}>
           {status === 'success' ? (
             <Icon name="check" size={20} color="#AAC8A7" />
-          ) : (
+          ) : status === 'failed' ? (
             <Icon name="close" size={20} color="#FF8080" />
+          ) : (
+            <Icon name="information" size={20} color="#86B6F6" />
           )}
         </View>
         <Text style={styles.title}>{title}</Text>
@@ -37,6 +39,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
     backgroundColor: 'white',
+    marginBottom: 15,
   },
   title: {
     fontSize: 16,
