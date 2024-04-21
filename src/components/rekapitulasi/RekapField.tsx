@@ -3,53 +3,24 @@ import DateTimePickerAndroid from '@react-native-community/datetimepicker';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import RNFS from 'react-native-fs';
+import notifee, {AndroidImportance} from '@notifee/react-native';
+// import FileViewer from 'react-native-file-viewer';
 
 const RekapField = () => {
   const [date, setDate] = React.useState(new Date());
   const [show, setShow] = React.useState(false);
   const [endDate, setEndDate] = React.useState(new Date());
   const [showEnd, setShowEnd] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const fetchDataPemesanan = React.useCallback(async () => {
-    try {
-      const user = auth().currentUser;
-      const query = await firestore()
-        .collection('booking')
-        .where('gor_uid', '==', user?.uid)
-        .get();
-
-      query.forEach(doc => {
-        console.log('Data', '=>', doc.data());
-      });
-    } catch (error) {
-      console.log('Error fetching data: ', error);
-    }
-  }, []);
-
-  const fetchDataPembayaran = React.useCallback(async () => {
-    try {
-      const user = auth().currentUser;
-      const query = await firestore()
-        .collection('payment')
-        .where('gor_uid', '==', user?.uid)
-        .get();
-
-      query.forEach(doc => {
-        console.log('Data', '=>', doc.data());
-      });
-    } catch (error) {
-      console.log('Error fetching data: ', error);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    fetchDataPemesanan();
-  }, [fetchDataPemesanan]);
-
-  React.useEffect(() => {
-    fetchDataPembayaran();
-  }, [fetchDataPembayaran]);
+  // const openFile = async (filePath: string) => {
+  //   try {
+  //     await FileViewer.open(filePath, {showOpenWithDialog: true});
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -71,6 +42,69 @@ const RekapField = () => {
     setShowEnd(true);
   };
 
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const user = auth().currentUser;
+    try {
+      const tanggalAwal = new Date(date).toISOString().split('T')[0]; // format date to 'yyyy-mm-dd'
+      const tanggalAkhir = new Date(endDate).toISOString().split('T')[0]; // format endDate to 'yyyy-mm-dd'
+
+      console.log(tanggalAwal, tanggalAkhir);
+
+      const url = `http://192.168.1.3:3000/getBookings?uid=${user?.uid}&tanggalAwal=${tanggalAwal}&tanggalAkhir=${tanggalAkhir}`;
+      const localPath = `${RNFS.DownloadDirectoryPath}/Rekapitulasi Data Pemesanan Lapangan - ${tanggalAwal}-${tanggalAkhir}.xlsx`;
+
+      const options = {
+        fromUrl: url,
+        toFile: localPath,
+        begin: (res: {contentLength: number}) => {
+          console.log('begin', res);
+          console.log(
+            'contentLength:',
+            res.contentLength / (1024 * 1024),
+            'MB',
+          );
+        },
+        progress: (res: {bytesWritten: number; contentLength: number}) => {
+          const progress = (res.bytesWritten / res.contentLength) * 100;
+          console.log(`progress: ${Math.floor(progress)}%`);
+        },
+      };
+
+      await RNFS.downloadFile(options).promise;
+
+      console.log('File downloaded to', localPath);
+
+      // openFile(localPath);
+
+      // Show a notification
+      await notifee.displayNotification({
+        title: 'Download Complete',
+        body: 'Rekapitulasi Data has been downloaded.',
+        android: {
+          channelId: 'download',
+          smallIcon: 'ic_launcher',
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    (async () => {
+      const channelId = await notifee.createChannel({
+        id: 'download',
+        name: 'Download Notifications',
+        importance: AndroidImportance.HIGH,
+        vibration: true,
+      });
+
+      console.log('Notification channel created', channelId);
+    })();
+  }, []);
   return (
     <>
       <View style={styles.container}>
@@ -134,8 +168,12 @@ const RekapField = () => {
           />
         ) : null}
         {/* Submit Button */}
-        <Pressable style={styles.btnSubmit}>
-          <Text style={styles.submitText}>Cetak</Text>
+        <Pressable style={styles.btnSubmit} onPress={handleSubmit}>
+          {isLoading ? (
+            <Text style={styles.submitText}>Loading...</Text>
+          ) : (
+            <Text style={styles.submitText}>Submit</Text>
+          )}
         </Pressable>
       </View>
     </>
@@ -183,5 +221,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
+    fontFamily: 'Poppins SemiBold',
   },
 });
