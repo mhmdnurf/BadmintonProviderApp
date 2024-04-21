@@ -14,6 +14,7 @@ interface Member {
   status: string;
   nomor: string;
   buktiPembayaran: string;
+  user_uid: string;
 }
 
 interface VerifikasiMember {
@@ -45,6 +46,7 @@ const VerifikasiMember = ({navigation}: VerifikasiMember) => {
         if (userData.exists) {
           data.push({
             id: documentSnapshot.id,
+            user_uid: memberData.user_uid,
             namaLengkap: userData.data()?.namaLengkap,
             jumlahPembayaran: memberData.jumlahPembayaran,
             masaAktif: memberData.masaAktif,

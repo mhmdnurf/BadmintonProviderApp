@@ -15,6 +15,7 @@ const DetailVerifikasiMember = ({
   navigation,
 }: DetailVerifikasiMember) => {
   const {data} = route.params;
+  console.log(data);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleConfirmRequest = async () => {
@@ -27,6 +28,14 @@ const DetailVerifikasiMember = ({
           status: 'Aktif',
           kuota: firestore.FieldValue.increment(4),
         });
+
+      await firestore().collection('notifikasi').add({
+        title: 'Pemberitahuan Aktivasi Member',
+        pesan: 'Member anda berhasil diaktivasi oleh pemilik GOR',
+        createdAt: firestore.FieldValue.serverTimestamp(),
+        user_uid: data[0].user_uid,
+        status: 'success',
+      });
     } catch (error) {
       console.log('Error confirming member: ', error);
     } finally {
@@ -40,6 +49,14 @@ const DetailVerifikasiMember = ({
     try {
       await firestore().collection('member').doc(data[0].id).update({
         status: 'Tidak Aktif',
+      });
+
+      await firestore().collection('notifikasi').add({
+        title: 'Pemberitahuan Aktivasi Member',
+        pesan: 'Member anda ditolak untuk diaktivasi oleh pemilik',
+        createdAt: firestore.FieldValue.serverTimestamp(),
+        user_uid: data[0].user_uid,
+        status: 'failed',
       });
     } catch (error) {
       console.log('Error rejecting member: ', error);

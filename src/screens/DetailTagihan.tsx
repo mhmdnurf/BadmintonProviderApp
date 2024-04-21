@@ -5,6 +5,8 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import InputField from '../components/InputField';
 import firestore from '@react-native-firebase/firestore';
 import BottomSpace from '../components/BottomSpace';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 interface DetailTagihan {
   route: any;
@@ -19,6 +21,7 @@ interface Admin {
 const DetailTagihan = ({route}: DetailTagihan) => {
   const {data} = route.params;
   const [dataAdmin, setDataAdmin] = React.useState<Admin[]>([]);
+  const [buktiPembayaran, setBuktiPembayaran] = React.useState({});
   const fetchAdmin = React.useCallback(async () => {
     const query = await firestore()
       .collection('users')
@@ -31,6 +34,32 @@ const DetailTagihan = ({route}: DetailTagihan) => {
   React.useEffect(() => {
     fetchAdmin();
   }, [fetchAdmin]);
+
+  const uploadFile = async () => {
+    try {
+      const res = await DocumentPicker.pickSingle({
+        type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+      });
+      const selectedFile = res.uri;
+      const selectedFileName = res.name;
+      const fileType = res.type;
+
+      const fileData = await RNFS.readFile(selectedFile, 'base64');
+
+      setBuktiPembayaran({
+        data: `data:${fileType};base64,${fileData}`,
+        type: fileType,
+        uri: selectedFile,
+        name: selectedFileName,
+      });
+    } catch (error) {
+      if (DocumentPicker.isCancel(error)) {
+        console.log('Canceled');
+      } else {
+        throw error;
+      }
+    }
+  };
   return (
     <>
       <RootContainer backgroundColor="white">
@@ -51,7 +80,7 @@ const DetailTagihan = ({route}: DetailTagihan) => {
           <InputField value={dataAdmin[0]?.noRek} editable={false} />
           <Text style={styles.label}>Nama Bank</Text>
           <InputField value={dataAdmin[0]?.namaBank} editable={false} />
-          <Pressable style={styles.btnContainer}>
+          <Pressable style={styles.btnContainer} onPress={uploadFile}>
             <Text style={styles.btnText}>Upload Bukti Pelunasan</Text>
           </Pressable>
         </View>
