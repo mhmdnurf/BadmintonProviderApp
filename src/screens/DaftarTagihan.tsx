@@ -17,7 +17,6 @@ const DaftarTagihan = ({navigation}: DaftarTagihan) => {
     setRefreshing(true);
     try {
       const userUid = auth().currentUser?.uid;
-      console.log('User UID: ', userUid);
       const periodeQuery = await firestore()
         .collection('komisi')
         .doc(userUid)
@@ -37,7 +36,6 @@ const DaftarTagihan = ({navigation}: DaftarTagihan) => {
         return docData;
       });
       setData(dataTagihan);
-      console.log('Data Tagihan: ', dataTagihan[0].createdAt);
     } catch (error) {
       console.log('Error fetching data: ', error);
     } finally {

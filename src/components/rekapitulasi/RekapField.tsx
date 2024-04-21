@@ -51,7 +51,7 @@ const RekapField = () => {
 
       console.log(tanggalAwal, tanggalAkhir);
 
-      const url = `http://192.168.1.3:3000/getBookings?uid=${user?.uid}&tanggalAwal=${tanggalAwal}&tanggalAkhir=${tanggalAkhir}`;
+      const url = `https://report-badminton-server.vercel.app/getBookings?uid=${user?.uid}&tanggalAwal=${tanggalAwal}&tanggalAkhir=${tanggalAkhir}`;
       const localPath = `${RNFS.DownloadDirectoryPath}/Rekapitulasi Data Pemesanan Lapangan - ${tanggalAwal}-${tanggalAkhir}.xlsx`;
 
       const options = {

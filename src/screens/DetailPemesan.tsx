@@ -102,11 +102,16 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
       const monthYear =
         date.toLocaleString('default', {month: 'long'}) +
         date.getFullYear().toString();
-      const komisiRef = firestore()
+
+      const komisiDocRef = firestore()
         .collection('komisi')
-        .doc(dataBooking.gor_uid)
-        .collection('periode')
-        .doc(monthYear);
+        .doc(dataBooking.gor_uid);
+
+      await komisiDocRef.set({
+        namaGOR: dataGOR.namaGOR,
+      });
+
+      const komisiRef = komisiDocRef.collection('periode').doc(monthYear);
 
       firestore()
         .runTransaction(async transaction => {
