@@ -53,7 +53,8 @@ const DetailVerifikasiMember = ({
 
       await firestore().collection('notifikasi').add({
         title: 'Pemberitahuan Aktivasi Member',
-        pesan: 'Member anda ditolak untuk diaktivasi oleh pemilik',
+        pesan:
+          'Member anda ditolak untuk diaktivasi oleh pemilik, silahkan hubungi pemilik GOR',
         createdAt: firestore.FieldValue.serverTimestamp(),
         user_uid: data[0].user_uid,
         status: 'failed',
