@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import {useIsFocused} from '@react-navigation/native';
 import TagihanButton from '../components/tagihan/TagihanButton';
+import {Alert} from 'react-native';
 
 interface Profile {
   navigation: any;
@@ -50,17 +51,34 @@ const Profile = ({navigation}: Profile) => {
     navigation.navigate('Rekapitulasi');
   };
 
-  const handleLogout = async () => {
-    try {
-      const user = auth().currentUser;
-      if (user) {
-        await AsyncStorage.removeItem('userToken');
-        console.log('Logout');
-        navigation.replace('Login');
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Apa anda yakin untuk keluar?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async () => {
+            try {
+              const user = auth().currentUser;
+              if (user) {
+                await AsyncStorage.removeItem('userToken');
+                console.log('Logout');
+                navigation.replace('Login');
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   const handleNavigateToEditProfile = () => {
