@@ -1,30 +1,13 @@
 import React from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 
 interface Waktu {
   status: string;
+  waktuBuka: string;
+  waktuTutup: string;
 }
 
-const Waktu = ({status}: Waktu) => {
-  const [waktuBuka, setWaktuBuka] = React.useState('');
-  const [waktuTutup, setWaktuTutup] = React.useState('');
-  const user = auth().currentUser;
-  const fetchWaktu = React.useCallback(async () => {
-    const userDocument = await firestore()
-      .collection('gor')
-      .doc(user?.uid)
-      .get();
-
-    const data = userDocument.data();
-    setWaktuBuka(data?.waktuBuka);
-    setWaktuTutup(data?.waktuTutup);
-  }, [user]);
-
-  React.useEffect(() => {
-    fetchWaktu();
-  }, [fetchWaktu]);
+const Waktu = ({status, waktuBuka, waktuTutup}: Waktu) => {
   return (
     <>
       <View style={styles.timeContainer}>

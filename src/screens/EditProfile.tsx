@@ -5,6 +5,8 @@ import DocumentPicker from 'react-native-document-picker';
 import EditField from '../components/profile/EditField';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import BottomSpace from '../components/BottomSpace';
+import {Alert} from 'react-native';
 
 interface EditProfile {
   route: any;
@@ -26,6 +28,8 @@ const EditProfile = ({route, navigation}: EditProfile) => {
   const {data} = route.params;
   const [namaLengkap, setNamaLengkap] = React.useState(data?.namaLengkap || '');
   const [nomor, setNomor] = React.useState(data?.nomor || '');
+  const [noRek, setNoRek] = React.useState(data?.noRek || '');
+  const [namaBank, setNamaBank] = React.useState(data?.namaBank || '');
   const [suratIzin, setSuratIzin] = React.useState<DocumentPick>();
   const [fotoGOR, setFotoGOR] = React.useState<DocumentPick>();
   const [dataGOR, setDataGOR] = React.useState({} as DataGOR);
@@ -57,33 +61,81 @@ const EditProfile = ({route, navigation}: EditProfile) => {
 
       const docRef = firestore().collection('gor').doc(user?.uid);
 
+      // Check if the 'nomor' already exists in the database
+      const nomorSnapshot = await firestore()
+        .collection('users')
+        .where('nomor', '==', nomor)
+        .get();
+      if (!nomorSnapshot.empty) {
+        // Check if the document with the same 'nomor' is the current user's document
+        const isCurrentUserDoc = nomorSnapshot.docs.some(
+          doc => doc.id === user?.uid,
+        );
+        if (!isCurrentUserDoc) {
+          Alert.alert('Error', 'Nomor telah terdaftar');
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      const rekening = await firestore()
+        .collection('users')
+        .where('noRek', '==', noRek)
+        .get();
+
+      if (!rekening.empty) {
+        const isCurrentUserDoc = rekening.docs.some(
+          doc => doc.id === user?.uid,
+        );
+        if (!isCurrentUserDoc) {
+          Alert.alert('Error', 'Nomor rekening telah terdaftar');
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const docSnapshot = await docRef.get();
       if (docSnapshot.exists) {
         const dataStatus = docSnapshot.data();
         if (dataStatus?.status === 'Ditolak') {
           await docRef.update({
-            namaLengkap,
-            nomor,
             fotoGOR: finalFotoGOR,
             suratIzin: finalSuratIzin,
             status: 'Menunggu Aktivasi',
           });
-        } else {
-          await docRef.update({
+
+          await firestore().collection('users').doc(user?.uid).update({
             namaLengkap,
             nomor,
+            noRek,
+            namaBank,
+          });
+        } else {
+          await docRef.update({
+            fotoGOR: finalFotoGOR,
+            suratIzin: finalSuratIzin,
+          });
+
+          await firestore().collection('users').doc(user?.uid).update({
+            namaLengkap,
+            nomor,
+            noRek,
+            namaBank,
+          });
+          console.log('Data berhasil diupdate', {
+            namaLengkap,
+            nomor,
+            noRek,
+            namaBank,
             fotoGOR: finalFotoGOR,
             suratIzin: finalSuratIzin,
           });
         }
       }
-
-      console.log('Data berhasil diupdate');
-    } catch (error) {
-      console.log(error);
-    } finally {
       setIsLoading(false);
       navigation.goBack();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -139,9 +191,13 @@ const EditProfile = ({route, navigation}: EditProfile) => {
         <Header title="Edit Profile" marginBottom={20} />
         <EditField
           fotoGOR={fotoGOR?.name}
-          namaLengkap={data?.namaLengkap}
-          nomor={data?.nomor}
+          namaLengkap={namaLengkap}
+          nomor={nomor}
+          noRek={noRek}
+          selectedBankValue={namaBank}
+          onBankValueChange={setNamaBank}
           suratIzin={suratIzin?.name}
+          onChangeNoRek={setNoRek}
           onPressSuratIzin={handleUploadSuratIzin}
           onPressFotoGOR={handleUploadFotoGOR}
           onPressSubmit={handleSubmit}
@@ -149,6 +205,7 @@ const EditProfile = ({route, navigation}: EditProfile) => {
           onChangeNomor={setNomor}
           isLoading={isLoading}
         />
+        <BottomSpace marginBottom={60} />
       </RootContainer>
     </>
   );

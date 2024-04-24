@@ -2,6 +2,7 @@ import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import InputField from '../InputField';
 import SubmitButton from './SubmitButton';
+import {Picker} from '@react-native-picker/picker';
 
 interface EditField {
   namaLengkap: string;
@@ -14,11 +15,19 @@ interface EditField {
   onPressSuratIzin: () => void;
   onPressSubmit: () => void;
   isLoading: boolean;
+  noRek: string;
+  onChangeNoRek: (text: string) => void;
+  selectedBankValue: string;
+  onBankValueChange: (itemValue: string, itemIndex: number) => void;
 }
 
 const EditField = ({
   namaLengkap,
   onChangeNamaLengkap,
+  noRek,
+  onChangeNoRek,
+  selectedBankValue,
+  onBankValueChange,
   nomor,
   onChangeNomor,
   fotoGOR,
@@ -35,6 +44,24 @@ const EditField = ({
         <InputField value={namaLengkap} onChangeText={onChangeNamaLengkap} />
         <Text style={styles.label}>Nomor HP</Text>
         <InputField value={nomor} onChangeText={onChangeNomor} />
+        <Text style={styles.label}>Nomor Rekening</Text>
+        <InputField value={noRek} onChangeText={onChangeNoRek} />
+        <Text style={styles.label}>Nama Bank</Text>
+        <View style={styles.picker}>
+          <Picker
+            style={styles.pickerText}
+            selectedValue={selectedBankValue}
+            onValueChange={onBankValueChange}>
+            <Picker.Item label="Nama Bank" value="" />
+            <Picker.Item label="BCA" value="BCA" />
+            <Picker.Item label="BRI" value="BRI" />
+            <Picker.Item label="BNI" value="BNI" />
+            <Picker.Item label="Mandiri" value="Mandiri" />
+            <Picker.Item label="BSI" value="BSI" />
+            <Picker.Item label="BTN" value="BTN" />
+            <Picker.Item label="CIMB Niaga" value="CIMB Niaga" />
+          </Picker>
+        </View>
         <Text style={styles.label}>Foto GOR</Text>
         <View style={styles.uploadContainer}>
           <InputField
@@ -96,5 +123,16 @@ const styles = StyleSheet.create({
   btnText: {
     color: 'white',
     fontSize: 20,
+  },
+  picker: {
+    borderWidth: 3,
+    borderColor: '#EEEDEB',
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  pickerText: {
+    fontFamily: 'Poppins Regular',
+    fontSize: 16,
+    color: '#000000',
   },
 });

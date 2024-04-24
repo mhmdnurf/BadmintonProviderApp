@@ -28,6 +28,7 @@ const Home = ({navigation}: Home) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [tagihan, setTagihan] = React.useState<any>({});
   const [pendapatan, setPendapatan] = React.useState<any>({});
+  const [dataGOR, setDataGOR] = React.useState({} as any);
   const user = auth().currentUser;
   const fetchData = React.useCallback(async () => {
     setRefreshing(true);
@@ -45,6 +46,7 @@ const Home = ({navigation}: Home) => {
     setFullName(userData?.namaLengkap);
     setStatus(gorData?.status);
     setCatatan(gorData?.catatan);
+    setDataGOR(gorData);
     setRefreshing(false);
   }, [user]);
 
@@ -112,17 +114,30 @@ const Home = ({navigation}: Home) => {
       fetchAdmin();
     }
   }, [fetchData, isFocused, fetchTagihan, fetchPendapatan, fetchAdmin]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+    fetchTagihan();
+    fetchPendapatan();
+    fetchAdmin();
+    setRefreshing(false);
+  };
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'white'} />
       <RootContainer
         backgroundColor="white"
         refreshing={refreshing}
-        onRefresh={fetchData}>
+        onRefresh={onRefresh}>
         <HeaderContainer>
           <Header title="Dashboard" marginBottom={40} />
           <DashboardHeader fullName={fullName} status={status} />
-          <Waktu status={status} />
+          <Waktu
+            status={status}
+            waktuBuka={dataGOR?.waktuBuka}
+            waktuTutup={dataGOR?.waktuTutup}
+          />
           <Announcement
             status={status}
             catatan={catatan}
