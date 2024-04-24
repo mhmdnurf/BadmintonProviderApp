@@ -6,13 +6,28 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import Logo from '../assets/svg/forgot_password.svg';
+import auth from '@react-native-firebase/auth';
 
 const ForgotPassword = (): React.JSX.Element => {
   const [email, setEmail] = useState<string>('');
   const screenHeight: number = Dimensions.get('window').height;
+
+  const handlePasswordReset = async () => {
+    try {
+      await auth().sendPasswordResetEmail(email);
+      Alert.alert(
+        'Berhasil',
+        'Permintaan reset password berhasil dikirim, silahkan cek email anda',
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{...styles.container, height: screenHeight}}>
@@ -33,7 +48,7 @@ const ForgotPassword = (): React.JSX.Element => {
           placeholderTextColor={'grey'}
         />
       </View>
-      <TouchableOpacity style={styles.btnLogin}>
+      <TouchableOpacity style={styles.btnLogin} onPress={handlePasswordReset}>
         <Text style={styles.btnText}>Request</Text>
       </TouchableOpacity>
     </ScrollView>
