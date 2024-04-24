@@ -1,6 +1,6 @@
 import React from 'react';
 import DateTimePickerAndroid from '@react-native-community/datetimepicker';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import RNFS from 'react-native-fs';
@@ -13,14 +13,6 @@ const RekapField = () => {
   const [endDate, setEndDate] = React.useState(new Date());
   const [showEnd, setShowEnd] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-
-  // const openFile = async (filePath: string) => {
-  //   try {
-  //     await FileViewer.open(filePath, {showOpenWithDialog: true});
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   const onChange = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -77,6 +69,11 @@ const RekapField = () => {
 
       // openFile(localPath);
 
+      Alert.alert(
+        'Rekapitulasi Data',
+        'Rekapitulasi data berhasil diunduh. Silahkan cek di folder Download.',
+      );
+
       // Show a notification
       await notifee.displayNotification({
         title: 'Download Complete',
@@ -105,6 +102,14 @@ const RekapField = () => {
       console.log('Notification channel created', channelId);
     })();
   }, []);
+
+  // const openFile = async (filePath: string) => {
+  //   try {
+  //     await FileViewer.open(filePath, {showOpenWithDialog: true});
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
   return (
     <>
       <View style={styles.container}>
@@ -188,8 +193,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   label: {
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
     fontSize: 16,
+    color: '#6F7789',
   },
   dateContainer: {marginHorizontal: 20, marginTop: 40},
   dateTitle: {

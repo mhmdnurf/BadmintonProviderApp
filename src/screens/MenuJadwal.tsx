@@ -256,6 +256,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins SemiBold',
     fontSize: 20,
     marginBottom: 10,
+    color: '#6F7789',
   },
   itemContainer: {
     flexDirection: 'row',
@@ -263,7 +264,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   dateContainer: {marginHorizontal: 20, marginTop: 40},
-  dateTitle: {fontFamily: 'Poppins SemiBold', fontSize: 20, marginBottom: 10},
+  dateTitle: {
+    fontFamily: 'Poppins SemiBold',
+    fontSize: 20,
+    marginBottom: 10,
+    color: '#6F7789',
+  },
   btnPicker: {
     backgroundColor: 'white',
     padding: 10,

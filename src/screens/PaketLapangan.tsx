@@ -29,13 +29,26 @@ const PaketLapangan = ({navigation}: PaketLapangan) => {
     });
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       setIsLoading(true);
       const user = auth().currentUser;
-      firestore().collection('gor').doc(user?.uid).update({
-        hargaLapangan: hargaLapangan,
-      });
+      const docRef = firestore().collection('gor').doc(user?.uid);
+
+      const docSnapshot = await docRef.get();
+      if (docSnapshot.exists) {
+        const data = docSnapshot.data();
+        if (data?.status === 'Ditolak') {
+          await docRef.update({
+            hargaLapangan: hargaLapangan,
+            status: 'Menunggu Aktivasi',
+          });
+        } else {
+          await docRef.update({
+            hargaLapangan: hargaLapangan,
+          });
+        }
+      }
     } catch (error) {
       console.log('error', error);
     } finally {

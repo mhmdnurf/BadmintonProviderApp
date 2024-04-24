@@ -38,7 +38,13 @@ const ListVerifikasiMember = ({
               fullName={item.namaLengkap}
               status={item.status}
               masaAktif={item.masaAktif}
-              backgroundColor={item.status !== 'Aktif' ? '#FF8080' : '#AAC8A7'}
+              backgroundColor={
+                item.status === 'Aktif'
+                  ? '#AAC8A7'
+                  : item.status === 'Menunggu Aktivasi'
+                  ? '#FFBB70'
+                  : '#F3A0A2'
+              }
             />
           </Pressable>
         )}

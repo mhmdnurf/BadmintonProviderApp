@@ -36,34 +36,47 @@ const DetailVerifikasiMember = ({
         user_uid: data[0].user_uid,
         status: 'success',
       });
+      Alert.alert('Persetujuan berhasil', 'Member berhasil diaktivasi');
     } catch (error) {
       console.log('Error confirming member: ', error);
     } finally {
       setIsLoading(false);
-      navigation.navigate('Home');
+      navigation.goBack();
     }
   };
 
   const handleTolakRequest = async () => {
     setIsLoading(true);
     try {
-      await firestore().collection('member').doc(data[0].id).update({
-        status: 'Tidak Aktif',
-      });
+      const docRef = firestore().collection('member').doc(data[0].id);
+      const docSnapshot = await docRef.get();
 
-      await firestore().collection('notifikasi').add({
-        title: 'Pemberitahuan Aktivasi Member',
-        pesan:
-          'Member anda ditolak untuk diaktivasi oleh pemilik, silahkan hubungi pemilik GOR',
-        createdAt: firestore.FieldValue.serverTimestamp(),
-        user_uid: data[0].user_uid,
-        status: 'failed',
-      });
+      if (docSnapshot.exists) {
+        const memberData = docSnapshot.data();
+        if (memberData?.status !== 'Aktif' || memberData?.kuotaLapangan === 0) {
+          await docRef.update({
+            status: 'Tidak Aktif',
+          });
+
+          await firestore().collection('notifikasi').add({
+            title: 'Pemberitahuan Aktivasi Member',
+            pesan:
+              'Member anda ditolak untuk diaktivasi oleh pemilik, jika ini adalah kesalahan, silahkan hubungi pemilik GOR',
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            user_uid: data[0].user_uid,
+            status: 'failed',
+          });
+        }
+      }
+      Alert.alert(
+        'Penolakan berhasil',
+        'Member berhasil ditolak untuk diaktivasi/perbarui',
+      );
     } catch (error) {
       console.log('Error rejecting member: ', error);
     } finally {
       setIsLoading(false);
-      navigation.navigate('Home');
+      navigation.goBack();
     }
   };
 

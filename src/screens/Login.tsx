@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {Alert, StatusBar, StyleSheet, Text, View} from 'react-native';
 import Header from '../components/Header';
 import Logo from '../assets/svg/login.svg';
 import LoginButton from '../components/login/LoginButton';
@@ -22,6 +22,13 @@ const Login = ({navigation}: Login) => {
 
   const handleLogin = async () => {
     setIsLoading(true);
+
+    if (!email || !password) {
+      setIsLoading(false);
+      Alert.alert('Login gagal', 'Email dan password tidak boleh kosong');
+      return;
+    }
+
     try {
       const userCredential = await auth().signInWithEmailAndPassword(
         email,
@@ -39,16 +46,35 @@ const Login = ({navigation}: Login) => {
 
         const userRole = userData?.role;
         if (userRole === 'provider') {
-          console.log('Login Pemilik berhasil');
           const userToken = userCredential.user.uid;
           await AsyncStorage.setItem('userToken', userToken);
           navigation.replace('Home');
         } else {
-          console.log('Login gagal');
+          Alert.alert(
+            'Login gagal',
+            'Akun yang digunakan bukan akun pemilik GOR',
+          );
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
+      setIsLoading(false);
+      if (e.code === 'auth/invalid-email') {
+        Alert.alert('Login gagal', 'Format email tidak valid');
+      } else if (e.code === 'auth/user-disabled') {
+        Alert.alert('Login gagal', 'Pengguna ini telah dinonaktifkan');
+      } else if (e.code === 'auth/user-not-found') {
+        Alert.alert('Login gagal', 'Pengguna tidak ditemukan');
+      } else if (e.code === 'auth/wrong-password') {
+        Alert.alert('Login gagal', 'Password salah');
+      } else if (e.code === 'auth/network-request-failed') {
+        Alert.alert('Login gagal', 'Tidak ada koneksi internet');
+      } else if (e.code === 'auth/invalid-credential') {
+        Alert.alert('Login gagal', 'Email atau password tidak valid');
+      } else {
+        Alert.alert('Login gagal', 'Terjadi kesalahan');
+      }
+      return;
     } finally {
       setIsLoading(false);
     }

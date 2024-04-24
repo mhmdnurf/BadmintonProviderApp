@@ -13,7 +13,13 @@ const ListCard = ({fullName, status, masaAktif, backgroundColor}: ListCard) => {
     <>
       <View style={styles.container}>
         <View style={styles.cardContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>Nama Lengkap</Text>
+          </View>
           <Text style={styles.title}>{fullName}</Text>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>Periode</Text>
+          </View>
           <Text style={styles.title}>{masaAktif}</Text>
           <View style={[styles.statusContainer, {backgroundColor}]}>
             <Text style={styles.statusText}>{status}</Text>
@@ -59,5 +65,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: 'Poppins SemiBold',
+  },
+  headerContainer: {
+    backgroundColor: '#F3F3F3',
+    padding: 10,
+    borderRadius: 10,
+  },
+  headerText: {
+    fontSize: 18,
+    color: '#4F4F4F',
+    fontFamily: 'Nunito Bold',
   },
 });

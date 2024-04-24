@@ -17,6 +17,7 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
   const [dataUser, setDataUser] = React.useState<any>({});
   const [dataPayment, setDataPayment] = React.useState<any>({});
   const [dataGOR, setDataGOR] = React.useState<any>({});
+  const [dataPemilik, setDataPemilik] = React.useState<any>({});
 
   const fetchGOR = React.useCallback(async () => {
     try {
@@ -67,9 +68,28 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
     }
   }, [dataBooking.booking_uid]);
 
+  const fetchPemilik = React.useCallback(async () => {
+    try {
+      const query = await firestore()
+        .collection('users')
+        .doc(dataBooking.gor_uid)
+        .get();
+
+      setDataPemilik(query.data());
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  }, [dataBooking.gor_uid]);
+
   React.useEffect(() => {
     fetchBooked();
   }, [fetchBooked]);
+
+  React.useEffect(() => {
+    if (dataBooking.gor_uid) {
+      fetchPemilik();
+    }
+  }, [dataBooking.gor_uid, fetchPemilik]);
 
   React.useEffect(() => {
     if (dataBooking.user_uid) {
@@ -113,7 +133,7 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
 
       const komisiRef = komisiDocRef.collection('periode').doc(monthYear);
 
-      firestore()
+      await firestore()
         .runTransaction(async transaction => {
           const doc = await transaction.get(komisiRef);
 
@@ -124,8 +144,12 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
           } else {
             transaction.set(komisiRef, {
               gor_uid: dataBooking.gor_uid,
+              namaGOR: dataGOR.namaGOR,
+              namaPemilik: dataPemilik.namaLengkap,
               createdAt: firestore.FieldValue.serverTimestamp(),
               jumlahKomisi: 2500,
+              periode: monthYear,
+              status: 'Belum Lunas',
             });
           }
         })
@@ -172,13 +196,11 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
           if (doc.exists) {
             transaction.update(totalKomisiRef, {
               totalKomisi: firestore.FieldValue.increment(2500),
-              status: 'Belum Lunas',
             });
           } else {
             transaction.set(totalKomisiRef, {
               createdAt: firestore.FieldValue.serverTimestamp(),
               totalKomisi: 2500,
-              status: 'Belum Lunas',
             });
           }
         })
@@ -194,9 +216,11 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
         user_uid: dataBooking.user_uid,
         title: 'Pembayaran Berhasil',
         status: 'success',
-        message: `Pemesanan anda di lapangan ${dataBooking.lapangan} - ${dataGOR.namaGOR} telah disetujui oleh Pemilik GOR. Silahkan cek status pemesanan anda di aplikasi.`,
+        pesan: `Pemesanan anda di lapangan ${dataBooking.lapangan} - ${dataGOR.namaGOR} telah disetujui oleh Pemilik GOR. Silahkan cek status pemesanan anda di aplikasi.`,
         createdAt: firestore.FieldValue.serverTimestamp(),
       });
+
+      Alert.alert('Persetujuan berhasil', 'Pemesanan berhasil disetujui');
     } catch (error) {
       console.log(error);
     } finally {
@@ -209,15 +233,10 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
     setIsLoading(true);
     try {
       const id = dataBooking.booking_uid;
-      await firestore()
-        .collection('booking')
-        .doc(id)
-        .update({
-          status: 'Pending',
-          expiredAt: firestore.Timestamp.fromDate(
-            new Date(Date.now() + 30 * 60 * 1000),
-          ),
-        });
+      await firestore().collection('booking').doc(id).update({
+        status: 'expired',
+        kondisi: 'Ditolak',
+      });
 
       await firestore().collection('payment').doc(id).update({
         status: 'Ditolak',
@@ -231,9 +250,10 @@ const DetailPemesan = ({route, navigation}: DetailPemesan) => {
         user_uid: dataBooking.user_uid,
         title: 'Pembayaran Gagal',
         status: 'failed',
-        message: `Pemesanan anda di lapangan ${dataBooking.lapangan} - ${dataGOR.namaGOR} telah ditolak oleh Pemilik GOR. Jika anda yakin ini kesalahan, silahkan hubungi nomor Pemilik GOR di aplikasi.`,
+        pesan: `Pemesanan anda di lapangan ${dataBooking.lapangan} - ${dataGOR.namaGOR} telah ditolak oleh Pemilik GOR. Jika anda yakin ini kesalahan, silahkan hubungi nomor Pemilik GOR di aplikasi.`,
         createdAt: firestore.FieldValue.serverTimestamp(),
       });
+      Alert.alert('Penolakan berhasil', 'Pemesanan berhasil ditolak');
     } catch (error) {
       console.log(error);
     } finally {

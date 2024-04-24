@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins SemiBold',
+    color: '#6F7789',
   },
   btnTolak: {
     backgroundColor: '#FD4949',
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
   btnText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Poppins SemiBold',
   },
   btnRootContainer: {
     flexDirection: 'row',

@@ -115,12 +115,16 @@ const DetailTagihan = ({route, navigation}: DetailTagihan) => {
         buktiPembayaran: buktiPembayaranURL,
         status: 'Menunggu Konfirmasi',
       });
+      Alert.alert(
+        'Berhasil submit data',
+        'Bukti pembayaran berhasil diupload, mohon menunggu konfirmasi dari admin.',
+      );
+      navigation.goBack();
       console.log('query', query);
     } catch (error) {
       console.log('Error: ', error);
     } finally {
       setIsLoading(false);
-      navigation.goBack();
     }
   };
   return (
@@ -183,6 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Poppins SemiBold',
     marginVertical: 5,
+    color: '#6F7789',
   },
   btnContainer: {
     backgroundColor: '#B4B4B8',

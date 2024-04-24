@@ -48,21 +48,35 @@ const EditProfile = ({route, navigation}: EditProfile) => {
     }
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsLoading(true);
     const user = auth().currentUser;
     try {
       const finalSuratIzin = suratIzin ?? dataGOR.suratIzin;
       const finalFotoGOR = fotoGOR ?? dataGOR.fotoGOR;
 
-      const query = firestore().collection('gor').doc(user?.uid);
-      query.update({
-        namaLengkap,
-        nomor,
-        fotoGOR: finalFotoGOR,
-        suratIzin: finalSuratIzin,
-        status: 'Menunggu Aktivasi',
-      });
+      const docRef = firestore().collection('gor').doc(user?.uid);
+
+      const docSnapshot = await docRef.get();
+      if (docSnapshot.exists) {
+        const dataStatus = docSnapshot.data();
+        if (dataStatus?.status === 'Ditolak') {
+          await docRef.update({
+            namaLengkap,
+            nomor,
+            fotoGOR: finalFotoGOR,
+            suratIzin: finalSuratIzin,
+            status: 'Menunggu Aktivasi',
+          });
+        } else {
+          await docRef.update({
+            namaLengkap,
+            nomor,
+            fotoGOR: finalFotoGOR,
+            suratIzin: finalSuratIzin,
+          });
+        }
+      }
 
       console.log('Data berhasil diupdate');
     } catch (error) {

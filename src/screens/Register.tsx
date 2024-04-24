@@ -140,6 +140,46 @@ const Register = ({navigation}: Register) => {
       Alert.alert('Submit tidak dapat dilakukan', 'Semua field harus diisi');
       return;
     }
+
+    const nikSnapshot = await firestore()
+      .collection('users')
+      .where('NIK', '==', nik)
+      .get();
+    if (!nikSnapshot.empty) {
+      Alert.alert('Submit tidak dapat dilakukan', 'NIK sudah terdaftar');
+      return;
+    }
+
+    const rekeningSnapshot = await firestore()
+      .collection('users')
+      .where('noRek', '==', nomorRekening)
+      .get();
+    if (!rekeningSnapshot.empty) {
+      Alert.alert(
+        'Submit tidak dapat dilakukan',
+        'Nomor Rekening sudah terdaftar',
+      );
+      return;
+    }
+
+    const emailSnapshot = await firestore()
+      .collection('users')
+      .where('email', '==', email)
+      .get();
+    if (!emailSnapshot.empty) {
+      Alert.alert('Submit tidak dapat dilakukan', 'Email sudah terdaftar');
+      return;
+    }
+
+    const nomorSnapshot = await firestore()
+      .collection('users')
+      .where('nomor', '==', nomor)
+      .get();
+    if (!nomorSnapshot.empty) {
+      Alert.alert('Submit tidak dapat dilakukan', 'Nomor HP sudah terdaftar');
+      return;
+    }
+
     setIsLoading(true);
     const userCredential = await auth().createUserWithEmailAndPassword(
       email,
@@ -185,7 +225,7 @@ const Register = ({navigation}: Register) => {
 
       let userDoc = firestore().collection('users').doc(user?.uid).set({
         namaLengkap: fullName,
-        nik: nik,
+        NIK: nik,
         email: email,
         nomor: nomor,
         alamatGOR: alamatGOR,
@@ -194,6 +234,7 @@ const Register = ({navigation}: Register) => {
         noRek: nomorRekening,
         namaBank: selectedBank,
         role: 'provider',
+        jenisKelamin: selectedJenisKelamin,
       });
 
       let gorDoc = firestore().collection('gor').doc(user?.uid).set({
@@ -207,15 +248,15 @@ const Register = ({navigation}: Register) => {
         status: 'Menunggu Aktivasi',
         suratIzin: suratIzinUrl,
         role: 'provider',
-        jenisKelamin: selectedJenisKelamin,
       });
 
       await Promise.all([userDoc, gorDoc]);
-    } catch (error) {
-      console.log('Error', error);
+    } catch (error: any) {
+      Alert.alert('Submit tidak dapat dilakukan', error.message);
     } finally {
       setIsLoading(false);
       navigation.replace('Login');
+      Alert.alert('Registrasi berhasil dilakukan', 'Silahkan login');
     }
   };
   return (

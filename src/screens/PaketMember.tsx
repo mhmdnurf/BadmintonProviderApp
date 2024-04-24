@@ -29,13 +29,26 @@ const PaketMember = ({navigation}: PaketMember) => {
     });
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
       setIsLoading(true);
       const user = auth().currentUser;
-      firestore().collection('gor').doc(user?.uid).update({
-        hargaMember: hargaMember,
-      });
+      const docRef = firestore().collection('gor').doc(user?.uid);
+
+      const docSnapshot = await docRef.get();
+      if (docSnapshot.exists) {
+        const data = docSnapshot.data();
+        if (data?.status === 'Ditolak') {
+          await docRef.update({
+            hargaMember: hargaMember,
+            status: 'Menunggu Aktivasi',
+          });
+        } else {
+          await docRef.update({
+            hargaMember: hargaMember,
+          });
+        }
+      }
     } catch (error) {
       console.log('error', error);
     } finally {

@@ -45,16 +45,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Poppins Bold',
     textAlign: 'center',
+    color: '#6F7789',
   },
   infoJumlah: {
     fontSize: 32,
     fontFamily: 'Poppins Bold',
     textAlign: 'center',
+    color: '#6F7789',
   },
   statusContainer: {
     marginVertical: 10,
     borderRadius: 10,
-    backgroundColor: '#FFC470',
+    backgroundColor: '#4F6F52',
     marginHorizontal: 20,
   },
   statusText: {
