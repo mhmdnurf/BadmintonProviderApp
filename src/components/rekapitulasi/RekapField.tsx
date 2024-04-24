@@ -67,6 +67,16 @@ const RekapField = () => {
 
       console.log('File downloaded to', localPath);
 
+      // Check if the file is empty
+      const stats = await RNFS.stat(localPath);
+      if (stats.size === 0) {
+        Alert.alert(
+          'Rekapitulasi Data',
+          'Tidak ada data rekap yang ditemukan.',
+        );
+        return;
+      }
+
       // openFile(localPath);
 
       Alert.alert(
