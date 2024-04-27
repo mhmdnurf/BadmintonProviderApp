@@ -65,7 +65,7 @@ const PaketLapangan = ({navigation}: PaketLapangan) => {
       <RootContainer backgroundColor="white">
         <View style={styles.container}>
           <Header title="Paket Lapangan" marginBottom={40} />
-          <Text style={styles.label}>Harga Paket Lapangan (2 jam)</Text>
+          <Text style={styles.label}>Harga Paket Lapangan (per Jam)</Text>
           <InputField
             placeholder="Harga Lapangan"
             value={hargaLapangan}
