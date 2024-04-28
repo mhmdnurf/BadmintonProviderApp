@@ -5,7 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import RNFS from 'react-native-fs';
 import notifee, {AndroidImportance} from '@notifee/react-native';
-// import FileViewer from 'react-native-file-viewer';
+import {Buffer} from 'buffer';
+import axios from 'axios';
 
 const RekapField = () => {
   const [date, setDate] = React.useState(new Date());
@@ -46,38 +47,16 @@ const RekapField = () => {
       const url = `https://report-badminton-server.vercel.app/getBookings?uid=${user?.uid}&tanggalAwal=${tanggalAwal}&tanggalAkhir=${tanggalAkhir}`;
       const localPath = `${RNFS.DownloadDirectoryPath}/Rekapitulasi Data Pemesanan Lapangan - ${tanggalAwal}-${tanggalAkhir}.xlsx`;
 
-      const options = {
-        fromUrl: url,
-        toFile: localPath,
-        begin: (res: {contentLength: number}) => {
-          console.log('begin', res);
-          console.log(
-            'contentLength:',
-            res.contentLength / (1024 * 1024),
-            'MB',
-          );
-        },
-        progress: (res: {bytesWritten: number; contentLength: number}) => {
-          const progress = (res.bytesWritten / res.contentLength) * 100;
-          console.log(`progress: ${Math.floor(progress)}%`);
-        },
-      };
+      // Use axios to download the file
+      const response = await axios.get(url, {responseType: 'arraybuffer'});
 
-      await RNFS.downloadFile(options).promise;
+      // Convert the data to a Buffer
+      const buffer = Buffer.from(response.data, 'binary');
+
+      // Write the file
+      await RNFS.writeFile(localPath, buffer.toString('base64'), 'base64');
 
       console.log('File downloaded to', localPath);
-
-      // Check if the file is empty
-      const stats = await RNFS.stat(localPath);
-      if (stats.size === 0) {
-        Alert.alert(
-          'Rekapitulasi Data',
-          'Tidak ada data rekap yang ditemukan.',
-        );
-        return;
-      }
-
-      // openFile(localPath);
 
       Alert.alert(
         'Rekapitulasi Data',
@@ -95,6 +74,7 @@ const RekapField = () => {
       });
     } catch (error) {
       console.error(error);
+      Alert.alert('Rekapitulasi Data', 'Tidak ada data rekap yang ditemukan.');
     } finally {
       setIsLoading(false);
     }
@@ -112,14 +92,6 @@ const RekapField = () => {
       console.log('Notification channel created', channelId);
     })();
   }, []);
-
-  // const openFile = async (filePath: string) => {
-  //   try {
-  //     await FileViewer.open(filePath, {showOpenWithDialog: true});
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
   return (
     <>
       <View style={styles.container}>
